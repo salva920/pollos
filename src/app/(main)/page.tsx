@@ -551,18 +551,16 @@ export default function HomePage() {
             boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)"
             border="1px solid"
             borderColor="blackAlpha.100"
-            borderLeft="4px solid"
-            borderLeftColor="brand.500"
             bg="white"
           >
             <StatLabel>
-              <HStack color="brand.600" fontSize="sm" fontWeight="600">
+              <HStack color="gray.800" fontSize="sm" fontWeight="bold">
                 <FiDollarSign />
                 <Text>Ventas del Día</Text>
               </HStack>
             </StatLabel>
             <StatNumber color="brand.600" fontWeight="700" fontSize="2xl" mt={1}>{formatCurrency(todaySales)}</StatNumber>
-            <StatHelpText color="gray.500" mt={1}>
+            <StatHelpText color="gray.600" mt={1} fontWeight="bold">
               {sales.filter(s => new Date(s.createdAt) >= today && s.status === 'completada').length} ventas
             </StatHelpText>
           </Stat>
@@ -574,18 +572,16 @@ export default function HomePage() {
             boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)"
             border="1px solid"
             borderColor="blackAlpha.100"
-            borderLeft="4px solid"
-            borderLeftColor="pollo.amarilloOscuro"
             bg="white"
           >
             <StatLabel>
-              <HStack color="gray.700" fontSize="sm" fontWeight="600">
-                <Box color="pollo.amarilloOscuro"><FiPackage /></Box>
+              <HStack color="gray.800" fontSize="sm" fontWeight="bold">
+                <FiPackage />
                 <Text>Productos en Stock</Text>
               </HStack>
             </StatLabel>
-            <StatNumber color="pollo.amarilloOscuro" fontWeight="700" fontSize="2xl" mt={1}>{products.length}</StatNumber>
-            <StatHelpText color="gray.500" mt={1}>
+            <StatNumber color="gray.800" fontWeight="700" fontSize="2xl" mt={1}>{products.length}</StatNumber>
+            <StatHelpText color="gray.600" mt={1} fontWeight="bold">
               {totalStock.toFixed(0)} unidades totales
             </StatHelpText>
           </Stat>
@@ -597,18 +593,16 @@ export default function HomePage() {
             boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)"
             border="1px solid"
             borderColor="orange.200"
-            borderLeft="4px solid"
-            borderLeftColor="orange.500"
             bg="orange.50"
           >
             <StatLabel>
-              <HStack color="orange.700" fontSize="sm" fontWeight="600">
+              <HStack color="gray.800" fontSize="sm" fontWeight="bold">
                 <FiAlertTriangle />
                 <Text>Stock Bajo</Text>
               </HStack>
             </StatLabel>
             <StatNumber color="orange.600" fontWeight="700" fontSize="2xl" mt={1}>{lowStockProducts.length}</StatNumber>
-            <StatHelpText color="gray.500" mt={1}>Productos con stock mínimo</StatHelpText>
+            <StatHelpText color="gray.600" mt={1} fontWeight="bold">Productos con stock mínimo</StatHelpText>
           </Stat>
 
           <Stat
@@ -618,30 +612,28 @@ export default function HomePage() {
             boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)"
             border="1px solid"
             borderColor="blackAlpha.100"
-            borderLeft="4px solid"
-            borderLeftColor="brand.400"
             bg="white"
           >
             <StatLabel>
-              <HStack color="brand.600" fontSize="sm" fontWeight="600">
+              <HStack color="gray.800" fontSize="sm" fontWeight="bold">
                 <FiShoppingCart />
                 <Text>Total Ventas</Text>
               </HStack>
             </StatLabel>
-            <StatNumber color="brand.600" fontWeight="700" fontSize="2xl" mt={1}>{sales.filter(s => s.status === 'completada').length}</StatNumber>
-            <StatHelpText color="gray.500" mt={1}>Ventas completadas</StatHelpText>
+            <StatNumber color="gray.800" fontWeight="700" fontSize="2xl" mt={1}>{sales.filter(s => s.status === 'completada').length}</StatNumber>
+            <StatHelpText color="gray.600" mt={1} fontWeight="bold">Ventas completadas</StatHelpText>
           </Stat>
         </SimpleGrid>
 
         <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={6}>
-          <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="blackAlpha.100" borderLeft="4px solid" borderLeftColor="brand.500" bg="white" overflow="hidden">
-            <Heading size="md" mb={4} fontWeight="600" color="brand.700">Productos más vendidos</Heading>
+          <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="blackAlpha.100" bg="white" overflow="hidden">
+            <Heading size="md" mb={4} fontWeight="bold" color="gray.800">Productos más vendidos</Heading>
             <Box overflowX="auto">
             <Table size="sm" variant="simple" minW="200px">
-              <Thead bg="brand.50">
+              <Thead>
                 <Tr>
-                  <Th color="brand.700">Producto</Th>
-                  <Th isNumeric color="brand.700">Cantidad</Th>
+                  <Th fontWeight="bold" color="gray.800">Producto</Th>
+                  <Th isNumeric fontWeight="bold" color="gray.800">Cantidad</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -662,15 +654,15 @@ export default function HomePage() {
             </Box>
           </Box>
 
-          <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="blackAlpha.100" borderLeft="4px solid" borderLeftColor="pollo.amarilloOscuro" bg="white" overflow="hidden">
-            <Heading size="md" mb={4} fontWeight="600" color="gray.800">Últimas ventas</Heading>
+          <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="blackAlpha.100" bg="white" overflow="hidden">
+            <Heading size="md" mb={4} fontWeight="bold" color="gray.800">Últimas ventas</Heading>
             <Box overflowX="auto">
             <Table size="sm" variant="simple" minW="200px">
-              <Thead bg="yellow.50">
+              <Thead>
                 <Tr>
-                  <Th color="pollo.amarilloOscuro">Cliente</Th>
-                  <Th isNumeric color="pollo.amarilloOscuro">Total</Th>
-                  <Th color="pollo.amarilloOscuro">Fecha</Th>
+                  <Th fontWeight="bold" color="gray.800">Cliente</Th>
+                  <Th isNumeric fontWeight="bold" color="gray.800">Total</Th>
+                  <Th fontWeight="bold" color="gray.800">Fecha</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -695,8 +687,8 @@ export default function HomePage() {
 
         {/* Productos con bajo stock */}
         {lowStockProducts.length > 0 && (
-          <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="orange.200" borderLeft="4px solid" borderLeftColor="orange.500" bg="orange.50" overflowX="auto">
-            <Heading size="md" mb={4} color="orange.700" fontWeight="600">
+          <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="orange.200" bg="orange.50" overflowX="auto">
+            <Heading size="md" mb={4} color="gray.800" fontWeight="bold">
               ⚠️ Productos con Stock Bajo
             </Heading>
             <Table size="sm" minW="300px">

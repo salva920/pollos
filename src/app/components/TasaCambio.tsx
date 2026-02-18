@@ -130,9 +130,9 @@ export default function TasaCambio() {
             </Box>
             <Box minW={0}>
               <HStack spacing={1} mb={0.5}>
-                <Text fontSize="sm" color="gray.500" fontWeight="500">Tasa de Cambio</Text>
+                <Text fontSize="sm" color="gray.800" fontWeight="bold">Tasa de Cambio</Text>
                 {tasaCambio?.fuente === 'api' && (
-                  <Text fontSize="xs" color="green.600" fontWeight="600">(API)</Text>
+                  <Text fontSize="xs" color="gray.800" fontWeight="bold">(API)</Text>
                 )}
               </HStack>
               <Text color="gray.800" fontWeight="700" fontSize={{ base: 'md', sm: 'lg' }} noOfLines={1}>
