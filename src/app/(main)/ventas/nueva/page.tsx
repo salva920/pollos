@@ -395,18 +395,20 @@ export default function NuevaVentaPage() {
 
   return (
     <Container maxW="container.xl" py={{ base: 4, md: 6 }} px={{ base: 2, md: 4 }}>
-      <VStack spacing={6} align="stretch">
+      <VStack spacing={6} align="stretch" bgGradient="linear(to-b, brand.50 0%, transparent 120px)" borderRadius="2xl" py={1}>
         {/* Header */}
         <Flex direction={{ base: 'column', sm: 'row' }} justify="space-between" align={{ base: 'stretch', sm: 'center' }} gap={3}>
-          <HStack spacing={3}>
-            <FiShoppingCart size={28} color="var(--chakra-colors-blue-500)" />
-            <Heading size={{ base: 'lg', md: 'xl' }} fontWeight="700" color="gray.800">
+          <Flex align="center" gap={3}>
+            <Box w="4px" h={{ base: 8, md: 10 }} bgGradient="linear(to-b, brand.500, pollo.amarilloOscuro)" borderRadius="full" flexShrink={0} />
+            <FiShoppingCart size={28} color="var(--chakra-colors-brand-500)" />
+            <Heading size={{ base: 'lg', md: 'xl' }} fontWeight="800" color="brand.600">
               Procesar Venta
             </Heading>
-          </HStack>
+          </Flex>
           <Button
             leftIcon={<FiX />}
             variant="outline"
+            colorScheme="brand"
             onClick={() => router.push('/ventas')}
             size={{ base: 'sm', md: 'md' }}
             w={{ base: 'full', sm: 'auto' }}
@@ -422,12 +424,12 @@ export default function NuevaVentaPage() {
               <VStack spacing={4} align="stretch">
                 <Flex direction={{ base: 'column', sm: 'row' }} justify="space-between" align={{ base: 'stretch', sm: 'center' }} gap={2} flexWrap="wrap">
                   <HStack minW={0} flex={1} spacing={2}>
-                    <Box as="span" flexShrink={0}><FiPackage size={20} color="var(--chakra-colors-blue-500)" /></Box>
-                    <Heading size="md" fontWeight="600" noOfLines={1} minW={0}>
+                    <Box as="span" flexShrink={0}><FiPackage size={20} color="var(--chakra-colors-brand-500)" /></Box>
+                    <Heading size="md" fontWeight="bold" noOfLines={1} minW={0} color="gray.800">
                       Productos Disponibles
                     </Heading>
                   </HStack>
-                  <Badge colorScheme="blue" fontSize="sm" px={3} py={1} borderRadius="full" flexShrink={0}>
+                  <Badge colorScheme="brand" fontSize="sm" px={3} py={1} borderRadius="full" flexShrink={0}>
                     {availableProducts.length} productos
                   </Badge>
                 </Flex>
@@ -436,11 +438,11 @@ export default function NuevaVentaPage() {
                   <Table size="sm" variant="simple" minW="520px">
                     <Thead position="sticky" top={0} bg="gray.50" zIndex={1}>
                       <Tr>
-                        <Th whiteSpace="nowrap">Producto</Th>
-                        <Th whiteSpace="nowrap">Categoría</Th>
-                        <Th isNumeric whiteSpace="nowrap">Stock</Th>
-                        <Th isNumeric whiteSpace="nowrap">Precio</Th>
-                        <Th whiteSpace="nowrap">Acciones</Th>
+                        <Th whiteSpace="nowrap" fontWeight="bold" color="gray.800">Producto</Th>
+                        <Th whiteSpace="nowrap" fontWeight="bold" color="gray.800">Categoría</Th>
+                        <Th isNumeric whiteSpace="nowrap" fontWeight="bold" color="gray.800">Stock</Th>
+                        <Th isNumeric whiteSpace="nowrap" fontWeight="bold" color="gray.800">Precio</Th>
+                        <Th whiteSpace="nowrap" fontWeight="bold" color="gray.800">Acciones</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -448,7 +450,7 @@ export default function NuevaVentaPage() {
                         <Tr key={product.id} _hover={{ bg: 'gray.50' }}>
                           <Td fontWeight="medium" minW="100px">{product.name}</Td>
                           <Td whiteSpace="nowrap">
-                            <Badge colorScheme="blue" size="sm">
+                            <Badge colorScheme="brand" size="sm">
                               {product.category}
                             </Badge>
                           </Td>
@@ -473,7 +475,7 @@ export default function NuevaVentaPage() {
                             <Button
                               size="sm"
                               leftIcon={<FiPlus />}
-                              colorScheme="blue"
+                              colorScheme="brand"
                               onClick={() => handleSelectProduct(product)}
                             >
                               Agregar
@@ -495,8 +497,8 @@ export default function NuevaVentaPage() {
 <Box bg="white" p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="md" border="1px solid" borderColor="gray.200">
               <VStack spacing={4} align="stretch">
                 <HStack>
-                  <FiUser size={20} color="var(--chakra-colors-blue-500)" />
-                    <Heading size="md" fontWeight="600">
+                  <FiUser size={20} color="var(--chakra-colors-brand-500)" />
+                    <Heading size="md" fontWeight="bold" color="gray.800">
                       Cliente
                     </Heading>
                   </HStack>
@@ -526,7 +528,7 @@ export default function NuevaVentaPage() {
                     </Box>
                     <Button
                       leftIcon={<FiPlus />}
-                      colorScheme="blue"
+                      colorScheme="brand"
                       variant="outline"
                       onClick={onNewCustomerModalOpen}
                     >
@@ -596,12 +598,12 @@ export default function NuevaVentaPage() {
                 <VStack spacing={4} align="stretch">
                   <HStack justify="space-between">
                     <HStack>
-                      <FiShoppingCart size={20} color="var(--chakra-colors-blue-500)" />
-                      <Heading size="md" fontWeight="600">
+                      <FiShoppingCart size={20} color="var(--chakra-colors-brand-500)" />
+                      <Heading size="md" fontWeight="bold" color="gray.800">
                         Detalle de Venta
                       </Heading>
                     </HStack>
-                    <Badge colorScheme="blue" fontSize="sm" px={3} py={1} borderRadius="full">
+                    <Badge colorScheme="brand" fontSize="sm" px={3} py={1} borderRadius="full">
                       {items.length} productos
                     </Badge>
                   </HStack>
@@ -621,10 +623,10 @@ export default function NuevaVentaPage() {
                       <Table size="sm" variant="simple">
                         <Thead position="sticky" top={0} bg="gray.50" zIndex={1}>
                           <Tr>
-                            <Th>Producto</Th>
-                            <Th isNumeric>Cantidad</Th>
-                            <Th isNumeric>Precio</Th>
-                            <Th isNumeric>Subtotal</Th>
+                            <Th fontWeight="bold" color="gray.800">Producto</Th>
+                            <Th isNumeric fontWeight="bold" color="gray.800">Cantidad</Th>
+                            <Th isNumeric fontWeight="bold" color="gray.800">Precio</Th>
+                            <Th isNumeric fontWeight="bold" color="gray.800">Subtotal</Th>
                             <Th width="50px"></Th>
                           </Tr>
                         </Thead>
@@ -646,7 +648,7 @@ export default function NuevaVentaPage() {
                                         <Button
                                           size="xs"
                                           variant="link"
-                                          colorScheme="blue"
+                                          colorScheme="brand"
                                           onClick={() => setExpandedProductIndex(isExpanded ? null : index)}
                                         >
                                           {isExpanded ? 'Ocultar' : 'Ver'} lotes ({lotesDisponibles.length})
@@ -867,7 +869,7 @@ export default function NuevaVentaPage() {
           <ModalBody>
             {loadingLotes ? (
               <Center py={8}>
-                <Spinner size="xl" />
+                <Spinner size="xl" color="brand.500" thickness="3px" />
               </Center>
             ) : productLotes.length === 0 ? (
               <Alert status="warning">
@@ -988,7 +990,7 @@ export default function NuevaVentaPage() {
               Cancelar
             </Button>
             <Button
-              colorScheme="blue"
+              colorScheme="brand"
               onClick={handleAddProductToSale}
               isDisabled={!productQuantity || !productPrice || parseFloat(productQuantity) <= 0 || parseFloat(productPrice) <= 0}
             >
@@ -1188,7 +1190,7 @@ export default function NuevaVentaPage() {
                 Cancelar
               </Button>
               <Button
-                colorScheme="blue"
+                colorScheme="brand"
                 type="submit"
                 isLoading={createCustomerMutation.isPending}
               >
