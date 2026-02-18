@@ -194,18 +194,21 @@ export default function ClientesPage() {
 
   if (isLoading) {
     return (
-      <Center h="80vh">
-        <Spinner size="xl" />
+      <Center h="80vh" bgGradient="linear(to-b, brand.50 0%, gray.50 100%)">
+        <Spinner size="xl" color="brand.500" thickness="3px" />
       </Center>
     )
   }
 
   return (
     <Container maxW="container.xl" px={{ base: 2, md: 4 }} py={{ base: 4, md: 6 }}>
-      <VStack spacing={6} align="stretch">
+      <VStack spacing={6} align="stretch" bgGradient="linear(to-b, brand.50 0%, transparent 120px)" borderRadius="2xl" py={1}>
         <Flex direction={{ base: 'column', sm: 'row' }} justify="space-between" align={{ base: 'stretch', sm: 'center' }} gap={3}>
-          <Heading size={{ base: 'lg', md: 'xl' }}>Gestión de Clientes</Heading>
-          <Button leftIcon={<FiPlus />} colorScheme="blue" onClick={() => handleOpen()} size={{ base: 'sm', md: 'md' }} w={{ base: 'full', sm: 'auto' }}>
+          <Flex align="center" gap={3}>
+            <Box w="4px" h={{ base: 8, md: 10 }} bgGradient="linear(to-b, brand.500, pollo.amarilloOscuro)" borderRadius="full" flexShrink={0} />
+            <Heading size={{ base: 'lg', md: 'xl' }} fontWeight="800" color="brand.600">Gestión de Clientes</Heading>
+          </Flex>
+          <Button leftIcon={<FiPlus />} colorScheme="brand" onClick={() => handleOpen()} size={{ base: 'sm', md: 'md' }} w={{ base: 'full', sm: 'auto' }} fontWeight="600">
             Nuevo Cliente
           </Button>
         </Flex>
@@ -221,16 +224,16 @@ export default function ClientesPage() {
           />
         </InputGroup>
 
-        <Box overflowX="auto" bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md">
+        <Box overflowX="auto" bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md" border="1px solid" borderColor="blackAlpha.100">
           <Table size="sm" minW="560px">
             <Thead>
               <Tr>
-                <Th>Nombre</Th>
-                <Th>Cédula</Th>
-                <Th>Teléfono</Th>
-                <Th>Email</Th>
-                <Th>Tipo</Th>
-                <Th>Acciones</Th>
+                <Th fontWeight="bold" color="gray.800">Nombre</Th>
+                <Th fontWeight="bold" color="gray.800">Cédula</Th>
+                <Th fontWeight="bold" color="gray.800">Teléfono</Th>
+                <Th fontWeight="bold" color="gray.800">Email</Th>
+                <Th fontWeight="bold" color="gray.800">Tipo</Th>
+                <Th fontWeight="bold" color="gray.800">Acciones</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -241,7 +244,7 @@ export default function ClientesPage() {
                   <Td>{customer.phone || '-'}</Td>
                   <Td>{customer.email || '-'}</Td>
                   <Td>
-                    <Badge colorScheme={customer.type === 'mayorista' ? 'purple' : 'blue'}>
+                    <Badge colorScheme={customer.type === 'mayorista' ? 'purple' : 'brand'}>
                       {customer.type === 'mayorista' ? 'Mayorista' : 'Detal'}
                     </Badge>
                   </Td>
@@ -272,8 +275,8 @@ export default function ClientesPage() {
 
       <Modal isOpen={isOpen} onClose={handleClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
+        <ModalContent borderRadius="2xl" borderTop="4px solid" borderTopColor="brand.500">
+          <ModalHeader fontWeight="700" color="brand.700">
             {editingCustomer ? 'Editar Cliente' : 'Nuevo Cliente'}
           </ModalHeader>
           <ModalCloseButton />
@@ -335,7 +338,7 @@ export default function ClientesPage() {
 
                 <Button
                   type="submit"
-                  colorScheme="blue"
+                  colorScheme="brand"
                   width="full"
                   isLoading={createMutation.isPending || updateMutation.isPending}
                 >
