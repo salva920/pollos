@@ -78,10 +78,15 @@ async function obtenerTasaDesdeAPI(): Promise<number | null> {
 export async function GET() {
   try {
     // Intentar obtener desde API externa primero
-    const tasaAPI = await obtenerTasaDesdeAPI()
-    
-    if (tasaAPI) {
-      // Guardar automáticamente la tasa obtenida de la API
+    let tasaAPI: number | null = null
+    try {
+      tasaAPI = await obtenerTasaDesdeAPI()
+    } catch (e) {
+      console.warn('obtenerTasaDesdeAPI error:', e)
+    }
+
+    if (tasaAPI && tasaAPI > 0) {
+      // Guardar automáticamente la tasa obtenida de la API (no obligatorio)
       try {
         await prisma.tasaCambio.create({
           data: {
@@ -89,29 +94,50 @@ export async function GET() {
           },
         })
       } catch (error) {
-        // Si falla al guardar, continuar con la respuesta
         console.warn('No se pudo guardar la tasa de la API:', error)
       }
-      
+
       return NextResponse.json({
         tasa: tasaAPI,
-        fecha: new Date(),
+        fecha: new Date().toISOString(),
         fuente: 'api',
       })
     }
 
     // Si la API falla, usar la última tasa guardada en BD
-    const tasaCambio = await prisma.tasaCambio.findFirst({
-      orderBy: {
-        fecha: 'desc',
-      },
-    })
+    let tasaCambio: { id?: string; tasa: number; fecha: Date } | null = null
+    try {
+      tasaCambio = await prisma.tasaCambio.findFirst({
+        orderBy: {
+          fecha: 'desc',
+        },
+      })
+    } catch (dbError: any) {
+      console.error('Error BD al obtener tasa:', dbError?.message || dbError)
+      return NextResponse.json(
+        { tasa: 0, fecha: new Date().toISOString(), fuente: 'bd' },
+        { status: 200 }
+      )
+    }
 
-    return NextResponse.json(tasaCambio || { tasa: 0, fecha: new Date(), fuente: 'bd' })
+    if (tasaCambio) {
+      return NextResponse.json({
+        id: tasaCambio.id,
+        tasa: Number(tasaCambio.tasa),
+        fecha: tasaCambio.fecha instanceof Date ? tasaCambio.fecha.toISOString() : tasaCambio.fecha,
+        fuente: 'bd',
+      })
+    }
+
+    return NextResponse.json({
+      tasa: 0,
+      fecha: new Date().toISOString(),
+      fuente: 'bd',
+    })
   } catch (error: any) {
     console.error('Error al obtener tasa de cambio:', error)
     return NextResponse.json(
-      { error: 'Error al obtener tasa de cambio', details: error.message },
+      { error: 'Error al obtener tasa de cambio', details: error?.message || String(error) },
       { status: 500 }
     )
   }
