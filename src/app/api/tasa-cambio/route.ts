@@ -15,10 +15,12 @@ async function obtenerTasaDesdeAPI(): Promise<number | null> {
       return null
     }
 
-    // API key en URL (formato común). Si la API usa header, cambia a: headers: { 'X-API-Key': apiKey }
-    const apiUrl = `${baseUrl}?api_key=${encodeURIComponent(apiKey)}`
-    const response = await fetch(apiUrl, {
-      headers: { 'Content-Type': 'application/json' },
+    // ApiKeyAuth: intentar header estándar (Api-Key / X-API-Key)
+    const response = await fetch(baseUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': apiKey,
+      },
     })
 
     if (!response.ok) {
@@ -31,36 +33,30 @@ async function obtenerTasaDesdeAPI(): Promise<number | null> {
     }
 
     const data = await response.json()
-    
-    // La API puede devolver diferentes formatos, ajustar según la respuesta real
-    // Posibles formatos: { rate: 36.50 }, { data: { rate: 36.50 } }, { exchangeRate: 36.50 }, { value: 36.50 }, etc.
-    let tasa = null
-    
-    if (typeof data === 'number') {
+
+    // Formato documentado: { current: { usd, eur, date }, previous, changePercentage }
+    let tasa: number | null = null
+    if (data?.current?.usd != null) {
+      tasa = parseFloat(data.current.usd)
+    } else if (typeof data === 'number') {
       tasa = data
     } else if (data.rate) {
       tasa = parseFloat(data.rate)
+    } else if (data.tasa) {
+      tasa = parseFloat(data.tasa)
+    } else if (data.usd) {
+      tasa = parseFloat(data.usd)
     } else if (data.data?.rate) {
       tasa = parseFloat(data.data.rate)
     } else if (data.exchangeRate) {
       tasa = parseFloat(data.exchangeRate)
-    } else if (data.tasa) {
-      tasa = parseFloat(data.tasa)
     } else if (data.value) {
       tasa = parseFloat(data.value)
     } else if (data.bcv) {
       tasa = parseFloat(data.bcv)
-    } else if (data.usd) {
-      tasa = parseFloat(data.usd)
     } else if (Array.isArray(data) && data.length > 0) {
-      // Si es un array, tomar el primer elemento
       const first = data[0]
       tasa = typeof first === 'number' ? first : parseFloat(first.rate || first.value || first.tasa || first)
-    }
-    
-    // Log para debugging (solo en desarrollo)
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Respuesta API tasa de cambio:', JSON.stringify(data, null, 2))
     }
 
     if (tasa && tasa > 0) {
