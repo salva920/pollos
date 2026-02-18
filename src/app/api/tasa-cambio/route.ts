@@ -15,11 +15,11 @@ async function obtenerTasaDesdeAPI(): Promise<number | null> {
       return null
     }
 
-    // ApiKeyAuth: intentar header estándar (Api-Key / X-API-Key)
+    // API dolarvzla.com usa header x-dolarvzla-key
     const response = await fetch(baseUrl, {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': apiKey,
+        'x-dolarvzla-key': apiKey,
       },
     })
 
