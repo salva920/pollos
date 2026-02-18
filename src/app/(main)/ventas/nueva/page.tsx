@@ -417,47 +417,47 @@ export default function NuevaVentaPage() {
 
         <Grid templateColumns={{ base: '1fr', lg: '3fr 2fr' }} gap={6}>
           {/* Columna Izquierda: Productos Disponibles */}
-          <GridItem>
-            <Box bg="white" p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="md" border="1px solid" borderColor="gray.200">
+          <GridItem minW={0}>
+            <Box bg="white" p={{ base: 3, md: 6 }} borderRadius="2xl" boxShadow="md" border="1px solid" borderColor="gray.200" overflow="hidden">
               <VStack spacing={4} align="stretch">
-                <HStack justify="space-between">
-                  <HStack>
-                    <FiPackage size={20} color="var(--chakra-colors-blue-500)" />
-                    <Heading size="md" fontWeight="600">
+                <Flex direction={{ base: 'column', sm: 'row' }} justify="space-between" align={{ base: 'stretch', sm: 'center' }} gap={2} flexWrap="wrap">
+                  <HStack minW={0} flex={1} spacing={2}>
+                    <Box as="span" flexShrink={0}><FiPackage size={20} color="var(--chakra-colors-blue-500)" /></Box>
+                    <Heading size="md" fontWeight="600" noOfLines={1} minW={0}>
                       Productos Disponibles
                     </Heading>
                   </HStack>
-                  <Badge colorScheme="blue" fontSize="sm" px={3} py={1} borderRadius="full">
+                  <Badge colorScheme="blue" fontSize="sm" px={3} py={1} borderRadius="full" flexShrink={0}>
                     {availableProducts.length} productos
                   </Badge>
-                </HStack>
+                </Flex>
 
-                <Box maxH="600px" overflowY="auto">
-                  <Table size="sm" variant="simple">
+                <Box maxH="600px" overflowY="auto" overflowX="auto" minW={0}>
+                  <Table size="sm" variant="simple" minW="520px">
                     <Thead position="sticky" top={0} bg="gray.50" zIndex={1}>
                       <Tr>
-                        <Th>Producto</Th>
-                        <Th>Categoría</Th>
-                        <Th isNumeric>Stock</Th>
-                        <Th isNumeric>Precio</Th>
-                        <Th>Acciones</Th>
+                        <Th whiteSpace="nowrap">Producto</Th>
+                        <Th whiteSpace="nowrap">Categoría</Th>
+                        <Th isNumeric whiteSpace="nowrap">Stock</Th>
+                        <Th isNumeric whiteSpace="nowrap">Precio</Th>
+                        <Th whiteSpace="nowrap">Acciones</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
                       {availableProducts.map((product: any) => (
                         <Tr key={product.id} _hover={{ bg: 'gray.50' }}>
-                          <Td fontWeight="medium">{product.name}</Td>
-                          <Td>
+                          <Td fontWeight="medium" minW="100px">{product.name}</Td>
+                          <Td whiteSpace="nowrap">
                             <Badge colorScheme="blue" size="sm">
                               {product.category}
                             </Badge>
                           </Td>
-                          <Td isNumeric>
+                          <Td isNumeric whiteSpace="nowrap">
                             <Badge colorScheme={product.stock > product.minStock ? 'green' : 'red'}>
                               {product.stock} {product.unit}
                             </Badge>
                           </Td>
-                          <Td>
+                          <Td whiteSpace="nowrap">
                             <VStack align="end" spacing={0}>
                               <Text fontWeight="bold" fontSize="sm">
                                 {formatCurrency(product.pricePerUnit, 'USD')}
@@ -469,7 +469,7 @@ export default function NuevaVentaPage() {
                               )}
                             </VStack>
                           </Td>
-                          <Td>
+                          <Td whiteSpace="nowrap">
                             <Button
                               size="sm"
                               leftIcon={<FiPlus />}

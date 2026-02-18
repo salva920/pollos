@@ -515,8 +515,8 @@ export default function ProductosPage() {
   }
 
   return (
-    <Container maxW="container.xl" px={{ base: 2, md: 4 }} py={{ base: 4, md: 6 }}>
-      <VStack spacing={6} align="stretch">
+    <Container maxW="container.xl" px={{ base: 2, md: 4 }} py={{ base: 4, md: 6 }} minW={0}>
+      <VStack spacing={6} align="stretch" minW={0}>
         <Flex
           direction={{ base: 'column', sm: 'row' }}
           justify="space-between"
@@ -524,7 +524,7 @@ export default function ProductosPage() {
           gap={3}
           flexWrap="wrap"
         >
-          <Heading size={{ base: 'lg', md: 'xl' }}>Gestión de Productos</Heading>
+          <Heading size={{ base: 'lg', md: 'xl' }} minW={0} noOfLines={1}>Gestión de Productos</Heading>
           <HStack spacing={2} flexWrap="wrap">
             <Button
               colorScheme="orange"
@@ -552,18 +552,18 @@ export default function ProductosPage() {
           />
         </InputGroup>
 
-        <Box overflowX="auto" bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md">
+        <Box overflowX="auto" overflowY="visible" bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md" minW={0}>
           <Table size="sm" minW="640px">
             <Thead>
               <Tr>
-                <Th>Nombre</Th>
-                <Th>Categoría</Th>
-                <Th>Unidad</Th>
-                <Th>Precio Venta</Th>
-                <Th isNumeric>Stock</Th>
-                <Th isNumeric>Stock Mín</Th>
-                <Th>Perecedero</Th>
-                <Th>Acciones</Th>
+                <Th whiteSpace="nowrap">Nombre</Th>
+                <Th whiteSpace="nowrap">Categoría</Th>
+                <Th whiteSpace="nowrap">Unidad</Th>
+                <Th whiteSpace="nowrap">Precio Venta</Th>
+                <Th isNumeric whiteSpace="nowrap">Stock</Th>
+                <Th isNumeric whiteSpace="nowrap">Stock Mín</Th>
+                <Th whiteSpace="nowrap">Perecedero</Th>
+                <Th whiteSpace="nowrap">Acciones</Th>
               </Tr>
             </Thead>
             <Tbody>
