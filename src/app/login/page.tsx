@@ -307,7 +307,7 @@ export default function LoginPage() {
                       MongoDB Atlas
                     </Link>
                   </ListItem>
-                  <ListItem>Obtén una nueva cadena de conexión desde "Connect" → "Connect your application"</ListItem>
+                  <ListItem>Obtén una nueva cadena de conexión desde &quot;Connect&quot; → &quot;Connect your application&quot;</ListItem>
                   <ListItem>Actualiza la variable <code>DATABASE_URL</code> en el archivo <code>.env</code></ListItem>
                   <ListItem>Verifica que tu IP esté en la whitelist de MongoDB Atlas</ListItem>
                 </UnorderedList>

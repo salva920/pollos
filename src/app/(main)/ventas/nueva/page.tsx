@@ -85,6 +85,7 @@ export default function NuevaVentaPage() {
   const [amountPaidUsd, setAmountPaidUsd] = useState('')
   const [bank, setBank] = useState('')
   const [referencia, setReferencia] = useState('')
+  const collapseBg = useColorModeValue('gray.50', 'gray.800')
 
   // Queries
   const { data: customers = [] } = useQuery({
@@ -690,7 +691,7 @@ export default function NuevaVentaPage() {
                                   <Tr>
                                     <Td colSpan={5} p={0}>
                                       <Collapse in={isExpanded} animateOpacity>
-                                        <Box bg={useColorModeValue('gray.50', 'gray.800')} p={4} borderTop="1px solid" borderColor="gray.200">
+                                        <Box bg={collapseBg} p={4} borderTop="1px solid" borderColor="gray.200">
                                           <VStack align="stretch" spacing={3}>
                                             <Text fontWeight="bold" fontSize="sm" color="gray.700">
                                               Información de Lotes - {product.name}

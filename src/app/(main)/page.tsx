@@ -105,6 +105,7 @@ export default function HomePage() {
   const queryClient = useQueryClient()
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const collapseBg = useColorModeValue('gray.50', 'gray.800')
 
   // Estado para la venta rápida
   const [customerId, setCustomerId] = useState('')
@@ -396,6 +397,7 @@ export default function HomePage() {
   // Verificar vencimientos al cargar
   useEffect(() => {
     verificarVencimientosMutation.mutate()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (isLoadingSales || isLoadingProducts) {
@@ -979,7 +981,7 @@ export default function HomePage() {
                               <Tr>
                                 <Td colSpan={5} p={0}>
                                   <Collapse in={isExpanded} animateOpacity>
-                                    <Box bg={useColorModeValue('gray.50', 'gray.800')} p={4} borderTop="1px solid" borderColor="gray.200">
+                                    <Box bg={collapseBg} p={4} borderTop="1px solid" borderColor="gray.200">
                                       <VStack align="stretch" spacing={3}>
                                         <Text fontWeight="bold" fontSize="sm" color="gray.700">
                                           Información de Lotes - {product.name}
