@@ -1,0 +1,300 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ========== PRODUCTOS ==========
+model Product {
+  id                    String         @id @default(auto()) @map("_id") @db.ObjectId
+  name                  String
+  category              String         // "pollo", "huevos", "queso", "lacteos", "viveres"
+  subCategory           String?        // subcategoría específica
+  description           String?
+  unit                  String         // "kg", "unidad", "docena", "litro", "paquete", "gramos"
+  precioInicial         Float?         // precio de compra inicial en USD (opcional para productos existentes)
+  pricePerUnit          Float          // precio de venta final en USD
+  stock                 Float          @default(0)
+  minStock              Float          @default(0)
+  
+  // Características específicas de alimentos
+  isPerishable          Boolean        @default(true)
+  refrigerationRequired Boolean        @default(false)
+  shelfLifeDays         Int?           // días de vida útil promedio
+  supplier              String?
+  sku                   String?        @unique
+  barcode               String?        @unique
+  
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  
+  lotes                 LoteProducto[]
+  saleItems             SaleItem[]
+  compraItems           CompraItem[]
+}
+
+// ========== LOTES (FIFO y Control de Vencimiento) ==========
+model LoteProducto {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId             String   @db.ObjectId
+  product               Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  loteNumber            String   // número de lote del proveedor
+  cantidad              Float    // cantidad inicial
+  stockActual           Float    // stock actual del lote
+  precioCompra          Float    // precio de compra unitario
+  precioVenta           Float    // precio de venta unitario
+  
+  // Control de fechas
+  fechaIngreso          DateTime @default(now())
+  fechaVencimiento      DateTime
+  estado                String   @default("activo") // "activo", "proximo_vencer", "vencido"
+  
+  compraId              String?  @db.ObjectId
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  @@index([productId])
+  @@index([fechaVencimiento])
+  @@index([estado])
+}
+
+// ========== CLIENTES ==========
+model Customer {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  cedula    String   @unique
+  email     String?
+  phone     String?
+  address   String?
+  type      String   @default("detal") // "detal", "mayorista"
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  sales     Sale[]
+}
+
+// ========== VENTAS ==========
+model Sale {
+  id                String      @id @default(auto()) @map("_id") @db.ObjectId
+  customerId        String      @db.ObjectId
+  customer          Customer    @relation(fields: [customerId], references: [id])
+  
+  invoiceNumber     String      @unique
+  total             Float
+  ganancia          Float       @default(0)
+  status            String      @default("completada") // "completada", "cancelada"
+  
+  // Información de pago
+  paymentMethod     String      // "efectivo", "transferencia", "punto", "credito"
+  paymentType       String      // "bolivares", "dolares", "mixto"
+  amountPaidBs      Float?
+  amountPaidUsd     Float?
+  tasaCambio        Float?
+  bank              String?
+  referencia        String?
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  items             SaleItem[]
+  
+  @@index([createdAt])
+  @@index([customerId])
+}
+
+model SaleItem {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  saleId        String   @db.ObjectId
+  sale          Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  
+  productId     String   @db.ObjectId
+  product       Product  @relation(fields: [productId], references: [id])
+  
+  quantity      Float
+  price         Float    // precio de venta unitario
+  subtotal      Float
+  ganancia      Float    @default(0)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([saleId])
+  @@index([productId])
+}
+
+// ========== PROVEEDORES ==========
+model Proveedor {
+  id                      String   @id @default(auto()) @map("_id") @db.ObjectId
+  nombre                  String
+  rif                     String   @unique
+  telefono                String?
+  email                   String?
+  direccion               String?
+  contacto                String?  // nombre del contacto
+  
+  productosSuministrados  String[] // categorías que provee
+  
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  
+  compras                 Compra[]
+}
+
+// ========== COMPRAS ==========
+model Compra {
+  id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  proveedorId     String       @db.ObjectId
+  proveedor       Proveedor    @relation(fields: [proveedorId], references: [id])
+  
+  numeroFactura   String?
+  total           Float
+  moneda          String       @default("VES") // "VES", "USD"
+  tasaCambio      Float?
+  
+  fecha           DateTime     @default(now())
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  
+  items           CompraItem[]
+  
+  @@index([proveedorId])
+  @@index([fecha])
+}
+
+model CompraItem {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  compraId        String   @db.ObjectId
+  compra          Compra   @relation(fields: [compraId], references: [id], onDelete: Cascade)
+  
+  productId       String   @db.ObjectId
+  product         Product  @relation(fields: [productId], references: [id])
+  
+  cantidad        Float
+  precioUnitario  Float
+  subtotal        Float
+  
+  // Información del lote creado
+  loteNumber      String
+  fechaVencimiento DateTime
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([compraId])
+  @@index([productId])
+}
+
+// ========== MERMAS Y DESPERDICIOS ==========
+model Merma {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId       String   @db.ObjectId
+  productName     String
+  loteId          String?  @db.ObjectId
+  loteNumber      String?
+  
+  cantidad        Float
+  motivo          String   // "vencido", "deteriorado", "roto", "otro"
+  descripcion     String?
+  costoUnitario   Float
+  costoTotal      Float
+  
+  fecha           DateTime @default(now())
+  reportadoPor    String?  // usuario que reportó
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([fecha])
+  @@index([productId])
+}
+
+// ========== GASTOS ==========
+model Gasto {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  fecha       DateTime @default(now())
+  concepto    String
+  categoria   String   // "servicios", "nomina", "mantenimiento", "transporte", "otros"
+  monto       Float
+  moneda      String   @default("VES")
+  descripcion String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([fecha])
+  @@index([categoria])
+}
+
+// ========== TASA DE CAMBIO ==========
+model TasaCambio {
+  id    String   @id @default(auto()) @map("_id") @db.ObjectId
+  tasa  Float
+  fecha DateTime @default(now())
+  
+  @@index([fecha])
+}
+
+// ========== CAJA ==========
+model Transaccion {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  fecha       DateTime @default(now())
+  tipo        String   // "venta", "compra", "gasto", "ajuste"
+  concepto    String
+  moneda      String   // "VES", "USD"
+  entrada     Float    @default(0)
+  salida      Float    @default(0)
+  saldo       Float    @default(0)
+  tasaCambio  Float    @default(0)
+  
+  referenciaId String? // ID de venta, compra o gasto
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([fecha])
+  @@index([tipo])
+}
+
+// ========== USUARIOS ==========
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  password  String   // hash de la contraseña
+  name      String
+  role      String   @default("vendedor") // "admin", "vendedor", "almacen"
+  active    Boolean  @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ========== ALERTAS ==========
+model Alerta {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  tipo        String   // "vencimiento", "stock_bajo", "temperatura"
+  prioridad   String   // "alta", "media", "baja"
+  mensaje     String
+  productId   String?  @db.ObjectId
+  loteId      String?  @db.ObjectId
+  leida       Boolean  @default(false)
+  
+  fecha       DateTime @default(now())
+  
+  @@index([fecha])
+  @@index([leida])
+  @@index([tipo])
+}
+
+// ========== CONFIGURACIÓN (contraseña módulo administración) ==========
+model Setting {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  key   String @unique
+  value String
+}
+
+

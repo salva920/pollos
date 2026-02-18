@@ -1,0 +1,21 @@
+# Dependencies (Vercel installs them)
+node_modules
+
+# Local env (never deploy secrets)
+.env
+.env.local
+.env.*.local
+
+# Debug and IDE
+npm-debug.log*
+.DS_Store
+.idea
+.vscode
+
+# Git
+.git
+.gitignore
+
+# Docs and dev files (optional, reduce deploy size)
+*.md
+!README.md
