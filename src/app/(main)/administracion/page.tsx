@@ -18,6 +18,7 @@ import {
   Td,
   VStack,
   HStack,
+  Flex,
   Stat,
   StatLabel,
   StatNumber,
@@ -41,6 +42,7 @@ import {
   Center,
   Alert,
   AlertIcon,
+  Badge,
 } from '@chakra-ui/react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { formatCurrency, formatDateShort } from '@/lib/utils'
@@ -315,8 +317,8 @@ export default function AdministracionPage() {
   // Puerta: cargando
   if (gateLoading) {
     return (
-      <Center minH="50vh">
-        <Spinner size="xl" colorScheme="brand" />
+      <Center minH="50vh" bgGradient="linear(to-b, brand.50 0%, gray.50 100%)">
+        <Spinner size="xl" color="brand.500" thickness="3px" />
       </Center>
     )
   }
@@ -455,49 +457,52 @@ export default function AdministracionPage() {
   // Contenido del módulo (desbloqueado)
   return (
     <Container maxW="container.xl" px={{ base: 2, md: 4 }} minW={0}>
-      <VStack spacing={6} align="stretch" minW={0}>
-        <Heading size={{ base: 'lg', md: 'xl' }} minW={0} noOfLines={1}>Módulo de Administración</Heading>
+      <VStack spacing={6} align="stretch" minW={0} bgGradient="linear(to-b, brand.50 0%, transparent 120px)" borderRadius="2xl" py={1}>
+        <Flex align="center" gap={3}>
+          <Box w="4px" h={{ base: 8, md: 10 }} bgGradient="linear(to-b, brand.500, pollo.amarilloOscuro)" borderRadius="full" flexShrink={0} />
+          <Heading size={{ base: 'lg', md: 'xl' }} fontWeight="800" color="brand.600" minW={0} noOfLines={1}>Módulo de Administración</Heading>
+        </Flex>
 
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
           <Stat
-            px={4}
-            py={5}
-            shadow="md"
+            px={5}
+            py={6}
+            borderRadius="2xl"
+            boxShadow="0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
             border="1px solid"
             borderColor="gray.200"
-            rounded="lg"
             bg="white"
           >
-            <StatLabel>Saldo en Caja</StatLabel>
-            <StatNumber color={saldoActual >= 0 ? 'green.500' : 'red.500'}>
+            <StatLabel fontWeight="bold" color="gray.800">Saldo en Caja</StatLabel>
+            <StatNumber color={saldoActual >= 0 ? 'green.600' : 'red.600'} fontWeight="700" fontSize="2xl" mt={1}>
               {formatCurrency(saldoActual)}
             </StatNumber>
           </Stat>
 
           <Stat
-            px={4}
-            py={5}
-            shadow="md"
+            px={5}
+            py={6}
+            borderRadius="2xl"
+            boxShadow="0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
             border="1px solid"
-            borderColor="gray.200"
-            rounded="lg"
+            borderColor="red.200"
             bg="white"
           >
-            <StatLabel>Total Gastos</StatLabel>
-            <StatNumber color="red.500">{formatCurrency(totalGastos)}</StatNumber>
+            <StatLabel fontWeight="bold" color="gray.800">Total Gastos</StatLabel>
+            <StatNumber color="red.600" fontWeight="700" fontSize="2xl" mt={1}>{formatCurrency(totalGastos)}</StatNumber>
           </Stat>
 
           <Stat
-            px={4}
-            py={5}
-            shadow="md"
+            px={5}
+            py={6}
+            borderRadius="2xl"
+            boxShadow="0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
             border="1px solid"
-            borderColor="gray.200"
-            rounded="lg"
+            borderColor="orange.200"
             bg="white"
           >
-            <StatLabel>Total Mermas</StatLabel>
-            <StatNumber color="orange.500">{formatCurrency(totalMermas)}</StatNumber>
+            <StatLabel fontWeight="bold" color="gray.800">Total Mermas</StatLabel>
+            <StatNumber color="orange.600" fontWeight="700" fontSize="2xl" mt={1}>{formatCurrency(totalMermas)}</StatNumber>
           </Stat>
         </SimpleGrid>
 
@@ -513,31 +518,51 @@ export default function AdministracionPage() {
 
           <TabPanels minW={0}>
             <TabPanel px={0} minW={0}>
-              <Box overflowX="auto" minW={0}>
-                <Table size="sm" minW="560px">
+              <Box 
+                overflowX="auto" 
+                minW={0}
+                bg="white"
+                borderRadius="2xl"
+                boxShadow="0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
+                border="1px solid"
+                borderColor="gray.200"
+                overflow="hidden"
+              >
+                <Table size="md" minW="560px" variant="simple">
                   <Thead>
-                    <Tr>
-                      <Th whiteSpace="nowrap">Fecha</Th>
-                      <Th whiteSpace="nowrap">Tipo</Th>
-                      <Th whiteSpace="nowrap">Concepto</Th>
-                      <Th isNumeric whiteSpace="nowrap">Entrada</Th>
-                      <Th isNumeric whiteSpace="nowrap">Salida</Th>
-                      <Th isNumeric whiteSpace="nowrap">Saldo</Th>
+                    <Tr bg="brand.50" borderBottom="2px solid" borderBottomColor="brand.200">
+                      <Th whiteSpace="nowrap" fontWeight="bold" color="brand.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Fecha</Th>
+                      <Th whiteSpace="nowrap" fontWeight="bold" color="brand.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Tipo</Th>
+                      <Th whiteSpace="nowrap" fontWeight="bold" color="brand.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Concepto</Th>
+                      <Th isNumeric whiteSpace="nowrap" fontWeight="bold" color="brand.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Entrada</Th>
+                      <Th isNumeric whiteSpace="nowrap" fontWeight="bold" color="brand.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Salida</Th>
+                      <Th isNumeric whiteSpace="nowrap" fontWeight="bold" color="brand.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Saldo</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {transacciones.map((tx: any) => (
-                      <Tr key={tx.id}>
-                        <Td fontSize="sm">{formatDateShort(tx.fecha)}</Td>
-                        <Td>{tx.tipo}</Td>
-                        <Td>{tx.concepto}</Td>
-                        <Td isNumeric color="green.600">
-                          {tx.entrada > 0 ? formatCurrency(tx.entrada) : '-'}
+                    {transacciones.map((tx: any, index: number) => (
+                      <Tr 
+                        key={tx.id}
+                        borderBottom="1px solid"
+                        borderBottomColor="gray.100"
+                        _hover={{ bg: 'gray.50', transform: 'scale(1.001)' }}
+                        transition="all 0.2s"
+                        bg={index % 2 === 0 ? 'white' : 'gray.25'}
+                      >
+                        <Td fontSize="sm" fontWeight="500" py={3} px={4} color="gray.700">{formatDateShort(tx.fecha)}</Td>
+                        <Td py={3} px={4}>
+                          <Badge colorScheme={tx.tipo === 'venta' ? 'green' : tx.tipo === 'gasto' ? 'red' : 'gray'} size="sm" fontWeight="600">
+                            {tx.tipo}
+                          </Badge>
                         </Td>
-                        <Td isNumeric color="red.600">
-                          {tx.salida > 0 ? formatCurrency(tx.salida) : '-'}
+                        <Td py={3} px={4} fontWeight="500" color="gray.800" maxW="300px" isTruncated>{tx.concepto}</Td>
+                        <Td isNumeric py={3} px={4} fontWeight="bold" fontSize="sm" color="green.600">
+                          {tx.entrada > 0 ? formatCurrency(tx.entrada) : <Text as="span" color="gray.400">-</Text>}
                         </Td>
-                        <Td isNumeric fontWeight="bold">{formatCurrency(tx.saldo)}</Td>
+                        <Td isNumeric py={3} px={4} fontWeight="bold" fontSize="sm" color="red.600">
+                          {tx.salida > 0 ? formatCurrency(tx.salida) : <Text as="span" color="gray.400">-</Text>}
+                        </Td>
+                        <Td isNumeric py={3} px={4} fontWeight="700" fontSize="md" color="gray.900">{formatCurrency(tx.saldo)}</Td>
                       </Tr>
                     ))}
                   </Tbody>
@@ -549,30 +574,49 @@ export default function AdministracionPage() {
               <VStack spacing={4} align="stretch" minW={0}>
                 <Button
                   leftIcon={<FiPlus />}
-                  colorScheme="blue"
+                  colorScheme="brand"
                   onClick={onGastoOpen}
                   alignSelf="flex-end"
+                  fontWeight="600"
                 >
                   Registrar Gasto
                 </Button>
 
-                <Box overflowX="auto" minW={0}>
-                  <Table size="sm" minW="400px">
+                <Box 
+                  overflowX="auto" 
+                  minW={0}
+                  bg="white"
+                  borderRadius="2xl"
+                  boxShadow="0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  overflow="hidden"
+                >
+                  <Table size="md" minW="400px" variant="simple">
                     <Thead>
-                      <Tr>
-                        <Th whiteSpace="nowrap">Fecha</Th>
-                        <Th whiteSpace="nowrap">Concepto</Th>
-                        <Th whiteSpace="nowrap">Categoría</Th>
-                        <Th isNumeric whiteSpace="nowrap">Monto</Th>
+                      <Tr bg="red.50" borderBottom="2px solid" borderBottomColor="red.200">
+                        <Th whiteSpace="nowrap" fontWeight="bold" color="red.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Fecha</Th>
+                        <Th whiteSpace="nowrap" fontWeight="bold" color="red.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Concepto</Th>
+                        <Th whiteSpace="nowrap" fontWeight="bold" color="red.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Categoría</Th>
+                        <Th isNumeric whiteSpace="nowrap" fontWeight="bold" color="red.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Monto</Th>
                       </Tr>
                     </Thead>
                   <Tbody>
-                    {gastos.map((gasto: any) => (
-                      <Tr key={gasto.id}>
-                        <Td fontSize="sm">{formatDateShort(gasto.fecha)}</Td>
-                        <Td>{gasto.concepto}</Td>
-                        <Td>{gasto.categoria}</Td>
-                        <Td isNumeric color="red.600" fontWeight="bold">
+                    {gastos.map((gasto: any, index: number) => (
+                      <Tr 
+                        key={gasto.id}
+                        borderBottom="1px solid"
+                        borderBottomColor="gray.100"
+                        _hover={{ bg: 'red.50', transform: 'scale(1.001)' }}
+                        transition="all 0.2s"
+                        bg={index % 2 === 0 ? 'white' : 'red.25'}
+                      >
+                        <Td fontSize="sm" fontWeight="500" py={3} px={4} color="gray.700">{formatDateShort(gasto.fecha)}</Td>
+                        <Td py={3} px={4} fontWeight="500" color="gray.800">{gasto.concepto}</Td>
+                        <Td py={3} px={4}>
+                          <Badge colorScheme="red" size="sm" fontWeight="600">{gasto.categoria}</Badge>
+                        </Td>
+                        <Td isNumeric py={3} px={4} color="red.600" fontWeight="700" fontSize="sm">
                           {formatCurrency(gasto.monto)}
                         </Td>
                       </Tr>
@@ -587,32 +631,49 @@ export default function AdministracionPage() {
               <VStack spacing={4} align="stretch" minW={0}>
                 <Button
                   leftIcon={<FiPlus />}
-                  colorScheme="blue"
+                  colorScheme="brand"
                   onClick={onMermaOpen}
                   alignSelf="flex-end"
+                  fontWeight="600"
                 >
                   Registrar Merma
                 </Button>
 
-                <Box overflowX="auto" minW={0}>
-                  <Table size="sm" minW="480px">
+                <Box 
+                  overflowX="auto" 
+                  minW={0}
+                  bg="white"
+                  borderRadius="2xl"
+                  boxShadow="0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  overflow="hidden"
+                >
+                  <Table size="md" minW="480px" variant="simple">
                     <Thead>
-                      <Tr>
-                        <Th whiteSpace="nowrap">Fecha</Th>
-                        <Th whiteSpace="nowrap">Producto</Th>
-                        <Th whiteSpace="nowrap">Cantidad</Th>
-                        <Th whiteSpace="nowrap">Motivo</Th>
-                        <Th isNumeric whiteSpace="nowrap">Costo</Th>
+                      <Tr bg="orange.50" borderBottom="2px solid" borderBottomColor="orange.200">
+                        <Th whiteSpace="nowrap" fontWeight="bold" color="orange.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Fecha</Th>
+                        <Th whiteSpace="nowrap" fontWeight="bold" color="orange.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Producto</Th>
+                        <Th whiteSpace="nowrap" fontWeight="bold" color="orange.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Cantidad</Th>
+                        <Th whiteSpace="nowrap" fontWeight="bold" color="orange.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Motivo</Th>
+                        <Th isNumeric whiteSpace="nowrap" fontWeight="bold" color="orange.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Costo</Th>
                       </Tr>
                     </Thead>
                   <Tbody>
-                    {mermas.map((merma: any) => (
-                      <Tr key={merma.id}>
-                        <Td fontSize="sm">{formatDateShort(merma.fecha)}</Td>
-                        <Td>{merma.productName}</Td>
-                        <Td>{merma.cantidad}</Td>
-                        <Td>{merma.motivo}</Td>
-                        <Td isNumeric color="orange.600" fontWeight="bold">
+                    {mermas.map((merma: any, index: number) => (
+                      <Tr 
+                        key={merma.id}
+                        borderBottom="1px solid"
+                        borderBottomColor="gray.100"
+                        _hover={{ bg: 'orange.50', transform: 'scale(1.001)' }}
+                        transition="all 0.2s"
+                        bg={index % 2 === 0 ? 'white' : 'orange.25'}
+                      >
+                        <Td fontSize="sm" fontWeight="500" py={3} px={4} color="gray.700">{formatDateShort(merma.fecha)}</Td>
+                        <Td py={3} px={4} fontWeight="500" color="gray.800">{merma.productName}</Td>
+                        <Td py={3} px={4} fontWeight="600" color="gray.700">{merma.cantidad}</Td>
+                        <Td py={3} px={4} color="gray.700">{merma.motivo}</Td>
+                        <Td isNumeric py={3} px={4} color="orange.600" fontWeight="700" fontSize="sm">
                           {formatCurrency(merma.costoTotal)}
                         </Td>
                       </Tr>
@@ -687,8 +748,8 @@ export default function AdministracionPage() {
       {/* Modal Gasto */}
       <Modal isOpen={isGastoOpen} onClose={onGastoClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Registrar Gasto</ModalHeader>
+        <ModalContent borderRadius="2xl" borderTop="4px solid" borderTopColor="red.500">
+          <ModalHeader fontWeight="700" color="red.700">Registrar Gasto</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <VStack spacing={4}>
@@ -746,7 +807,7 @@ export default function AdministracionPage() {
               </FormControl>
 
               <Button
-                colorScheme="blue"
+                colorScheme="brand"
                 width="full"
                 onClick={() => createGastoMutation.mutate(gastoData)}
                 isLoading={createGastoMutation.isPending}
@@ -761,8 +822,8 @@ export default function AdministracionPage() {
       {/* Modal Merma */}
       <Modal isOpen={isMermaOpen} onClose={onMermaClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Registrar Merma</ModalHeader>
+        <ModalContent borderRadius="2xl" borderTop="4px solid" borderTopColor="orange.500">
+          <ModalHeader fontWeight="700" color="orange.700">Registrar Merma</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <VStack spacing={4}>
@@ -813,7 +874,7 @@ export default function AdministracionPage() {
               </FormControl>
 
               <Button
-                colorScheme="blue"
+                colorScheme="brand"
                 width="full"
                 onClick={() => createMermaMutation.mutate(mermaData)}
                 isLoading={createMermaMutation.isPending}
