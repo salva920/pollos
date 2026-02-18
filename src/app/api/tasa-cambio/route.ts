@@ -8,22 +8,25 @@ import { getSession } from '@/lib/auth'
 async function obtenerTasaDesdeAPI(): Promise<number | null> {
   try {
     const apiKey = process.env.DOLAR_VZLA_API_KEY
-    const apiUrl = 'https://api.dolarvzla.com/public/bcv/exchange-rate'
+    const baseUrl = 'https://api.dolarvzla.com/public/bcv/exchange-rate'
 
     if (!apiKey) {
       console.warn('DOLAR_VZLA_API_KEY no configurada')
       return null
     }
 
+    // API key en URL (formato común). Si la API usa header, cambia a: headers: { 'X-API-Key': apiKey }
+    const apiUrl = `${baseUrl}?api_key=${encodeURIComponent(apiKey)}`
     const response = await fetch(apiUrl, {
-      headers: {
-        'X-API-Key': apiKey,
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
     })
 
     if (!response.ok) {
-      console.error('Error al obtener tasa desde API externa:', response.status, response.statusText)
+      if (response.status === 401) {
+        console.warn('API tasa de cambio: 401 Unauthorized. Revisa DOLAR_VZLA_API_KEY o usa tasa manual.')
+      } else {
+        console.error('Error al obtener tasa desde API externa:', response.status, response.statusText)
+      }
       return null
     }
 
