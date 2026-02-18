@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Container,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
@@ -23,6 +24,7 @@ import {
   Link,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
+import ChickenLogo from '../components/ChickenLogo'
 
 export default function LoginPage() {
   const [username, setUsername] = useState('')
@@ -266,8 +268,10 @@ export default function LoginPage() {
 
   if (isInitialized === null && !connectionError) {
     return (
-      <Box minH="100vh" bgGradient="linear(to-br, brand.50 0%, gray.50 50%, brand.100 100%)" display="flex" alignItems="center" justifyContent="center">
+      <Box minH="100vh" bgGradient="linear(135deg, brand.50 0%, gray.50 40%, pollo.amarillo 99%)" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={6}>
+        <ChickenLogo boxSize={16} />
         <Spinner size="xl" color="brand.500" thickness="3px" />
+        <Text color="gray.600" fontWeight="500">Cargando...</Text>
       </Box>
     )
   }
@@ -275,17 +279,21 @@ export default function LoginPage() {
   // Mostrar error de conexión
   if (connectionError) {
     return (
-      <Box minH="100vh" bgGradient="linear(to-br, brand.50 0%, gray.50 50%, brand.100 100%)" py={20} px={4}>
+      <Box minH="100vh" bgGradient="linear(135deg, brand.50 0%, gray.50 40%, pollo.amarillo 99%)" py={20} px={4}>
         <Container maxW="2xl" centerContent>
         <Box
           bg="white"
           p={8}
           borderRadius="2xl"
-          boxShadow="0 25px 50px -12px rgb(0 0 0 / 0.15)"
+          boxShadow="0 25px 50px -12px rgb(0 0 0 / 0.2), 0 0 0 1px rgb(0 0 0 / 0.05)"
           w="full"
-          borderWidth="1px"
-          borderColor="blackAlpha.100"
+          borderTop="4px solid"
+          borderTopColor="red.500"
         >
+          <Flex direction="column" align="center" mb={6}>
+            <ChickenLogo boxSize={14} />
+            <Heading size="md" mt={3} color="gray.800" fontWeight="700">Sistema Alimentos</Heading>
+          </Flex>
           <Alert status="error" borderRadius="md" mb={6}>
             <AlertIcon />
             <Box>
@@ -349,31 +357,36 @@ export default function LoginPage() {
 
   if (!isInitialized && !showInitForm) {
     return (
-      <Box minH="100vh" bgGradient="linear(to-br, brand.50 0%, gray.50 50%, brand.100 100%)" display="flex" alignItems="center" justifyContent="center" py={12} px={4}>
+      <Box minH="100vh" bgGradient="linear(135deg, brand.50 0%, gray.50 40%, pollo.amarillo 99%)" display="flex" alignItems="center" justifyContent="center" py={12} px={4}>
       <Container maxW="md" centerContent>
         <Box
           bg="white"
           p={10}
           borderRadius="2xl"
-          boxShadow="0 25px 50px -12px rgb(0 0 0 / 0.15)"
+          boxShadow="0 25px 50px -12px rgb(0 0 0 / 0.2), 0 0 0 1px rgb(0 0 0 / 0.05)"
           w="full"
-          borderWidth="1px"
-          borderColor="blackAlpha.100"
+          borderTop="4px solid"
+          borderTopColor="brand.500"
         >
-          <Heading size="xl" mb={4} textAlign="center" color="gray.800" fontWeight="700">
-            Bienvenido al Sistema
-          </Heading>
+          <Flex direction="column" align="center" mb={6}>
+            <ChickenLogo boxSize={16} />
+            <Heading size="xl" mt={4} textAlign="center" fontWeight="800">
+              <Text as="span" color="brand.600">Bienvenido </Text>
+              <Text as="span" color="pollo.amarilloOscuro">al Sistema</Text>
+            </Heading>
+          </Flex>
           <Text mb={2} textAlign="center" color="gray.600" fontSize="md">
             Es la primera vez que usas este sistema.
           </Text>
           <Text mb={6} textAlign="center" color="gray.500" fontSize="sm">
-            Necesitas crear el primer usuario administrador para comenzar.
+            Crea el primer usuario administrador para comenzar.
           </Text>
           <Button
             colorScheme="brand"
             width="full"
             size="lg"
             borderRadius="xl"
+            fontWeight="600"
             onClick={() => setShowInitForm(true)}
           >
             Crear Usuario Administrador
@@ -386,20 +399,23 @@ export default function LoginPage() {
 
   if (!isInitialized && showInitForm) {
     return (
-      <Box minH="100vh" bgGradient="linear(to-br, brand.50 0%, gray.50 50%, brand.100 100%)" display="flex" alignItems="center" justifyContent="center" py={12} px={4}>
+      <Box minH="100vh" bgGradient="linear(135deg, brand.50 0%, gray.50 40%, pollo.amarillo 99%)" display="flex" alignItems="center" justifyContent="center" py={12} px={4}>
       <Container maxW="md" centerContent>
         <Box
           bg="white"
           p={10}
           borderRadius="2xl"
-          boxShadow="0 25px 50px -12px rgb(0 0 0 / 0.15)"
+          boxShadow="0 25px 50px -12px rgb(0 0 0 / 0.2), 0 0 0 1px rgb(0 0 0 / 0.05)"
           w="full"
-          borderWidth="1px"
-          borderColor="blackAlpha.100"
+          borderTop="4px solid"
+          borderTopColor="brand.500"
         >
-          <Heading size="xl" mb={2} textAlign="center" color="gray.800" fontWeight="700">
-            Crear Usuario Administrador
-          </Heading>
+          <Flex direction="column" align="center" mb={6}>
+            <ChickenLogo boxSize={14} />
+            <Heading size="lg" mt={3} textAlign="center" fontWeight="800" color="brand.700">
+              Crear Usuario Administrador
+            </Heading>
+          </Flex>
           <Text mb={6} textAlign="center" color="gray.500" fontSize="sm">
             Completa el formulario para crear tu cuenta de administrador
           </Text>
@@ -487,29 +503,55 @@ export default function LoginPage() {
   return (
     <Box
       minH="100vh"
-      bgGradient="linear(to-br, brand.50 0%, gray.50 50%, brand.100 100%)"
+      bgGradient="linear(135deg, brand.50 0%, gray.50 40%, pollo.amarillo 99%)"
       display="flex"
       alignItems="center"
       justifyContent="center"
       py={12}
       px={4}
+      position="relative"
+      overflow="hidden"
     >
-      <Container maxW="md" centerContent>
+      <Box
+        position="absolute"
+        top="-20%"
+        right="-10%"
+        w="400px"
+        h="400px"
+        borderRadius="full"
+        bg="brand.100"
+        opacity={0.4}
+      />
+      <Box
+        position="absolute"
+        bottom="-10%"
+        left="-5%"
+        w="300px"
+        h="300px"
+        borderRadius="full"
+        bg="pollo.amarillo"
+        opacity={0.15}
+      />
+      <Container maxW="md" centerContent position="relative" zIndex={1}>
         <Box
           bg="white"
-          p={10}
+          p={{ base: 8, md: 10 }}
           borderRadius="2xl"
-          boxShadow="0 25px 50px -12px rgb(0 0 0 / 0.15)"
+          boxShadow="0 25px 50px -12px rgb(0 0 0 / 0.2), 0 0 0 1px rgb(0 0 0 / 0.05)"
           w="full"
-          borderWidth="1px"
-          borderColor="blackAlpha.100"
+          borderTop="4px solid"
+          borderTopColor="brand.500"
         >
-          <Heading size="xl" mb={2} textAlign="center" color="gray.800" fontWeight="700">
-            Sistema de Gestión de Alimentos
-          </Heading>
-          <Text mb={8} textAlign="center" color="gray.500" fontSize="sm">
-            {showRegisterForm ? 'Crea tu cuenta para acceder al sistema' : 'Inicia sesión para continuar'}
-          </Text>
+          <Flex direction="column" align="center" mb={8}>
+            <ChickenLogo boxSize={16} />
+            <Heading size="xl" mt={4} textAlign="center" fontWeight="800" letterSpacing="tight">
+              <Text as="span" color="brand.600">Sistema </Text>
+              <Text as="span" color="pollo.amarilloOscuro">Alimentos</Text>
+            </Heading>
+            <Text mt={2} textAlign="center" color="gray.500" fontSize="sm" fontWeight="500">
+              {showRegisterForm ? 'Crea tu cuenta para acceder' : 'Inicia sesión para continuar'}
+            </Text>
+          </Flex>
 
           {showRegisterForm ? (
             <form onSubmit={handleRegister}>
