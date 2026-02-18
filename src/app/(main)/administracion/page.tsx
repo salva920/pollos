@@ -454,9 +454,9 @@ export default function AdministracionPage() {
 
   // Contenido del módulo (desbloqueado)
   return (
-    <Container maxW="container.xl">
-      <VStack spacing={6} align="stretch">
-        <Heading>Módulo de Administración</Heading>
+    <Container maxW="container.xl" px={{ base: 2, md: 4 }} minW={0}>
+      <VStack spacing={6} align="stretch" minW={0}>
+        <Heading size={{ base: 'lg', md: 'xl' }} minW={0} noOfLines={1}>Módulo de Administración</Heading>
 
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
           <Stat
@@ -501,26 +501,28 @@ export default function AdministracionPage() {
           </Stat>
         </SimpleGrid>
 
-        <Tabs isLazy variant="enclosed">
-          <TabList>
-            <Tab>Transacciones</Tab>
-            <Tab>Gastos</Tab>
-            <Tab>Mermas</Tab>
-            {userRole === 'admin' && <Tab><HStack><FiSettings /><Text>Configuración</Text></HStack></Tab>}
-          </TabList>
+        <Tabs isLazy variant="enclosed" minW={0}>
+          <Box overflowX="auto" minW={0}>
+            <TabList flexWrap="nowrap" minW="max-content">
+              <Tab whiteSpace="nowrap">Transacciones</Tab>
+              <Tab whiteSpace="nowrap">Gastos</Tab>
+              <Tab whiteSpace="nowrap">Mermas</Tab>
+              {userRole === 'admin' && <Tab whiteSpace="nowrap"><HStack><FiSettings /><Text>Configuración</Text></HStack></Tab>}
+            </TabList>
+          </Box>
 
-          <TabPanels>
-            <TabPanel>
-              <Box overflowX="auto">
-                <Table size="sm">
+          <TabPanels minW={0}>
+            <TabPanel px={0} minW={0}>
+              <Box overflowX="auto" minW={0}>
+                <Table size="sm" minW="560px">
                   <Thead>
                     <Tr>
-                      <Th>Fecha</Th>
-                      <Th>Tipo</Th>
-                      <Th>Concepto</Th>
-                      <Th isNumeric>Entrada</Th>
-                      <Th isNumeric>Salida</Th>
-                      <Th isNumeric>Saldo</Th>
+                      <Th whiteSpace="nowrap">Fecha</Th>
+                      <Th whiteSpace="nowrap">Tipo</Th>
+                      <Th whiteSpace="nowrap">Concepto</Th>
+                      <Th isNumeric whiteSpace="nowrap">Entrada</Th>
+                      <Th isNumeric whiteSpace="nowrap">Salida</Th>
+                      <Th isNumeric whiteSpace="nowrap">Saldo</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
@@ -543,8 +545,8 @@ export default function AdministracionPage() {
               </Box>
             </TabPanel>
 
-            <TabPanel>
-              <VStack spacing={4} align="stretch">
+            <TabPanel px={0} minW={0}>
+              <VStack spacing={4} align="stretch" minW={0}>
                 <Button
                   leftIcon={<FiPlus />}
                   colorScheme="blue"
@@ -554,15 +556,16 @@ export default function AdministracionPage() {
                   Registrar Gasto
                 </Button>
 
-                <Table size="sm">
-                  <Thead>
-                    <Tr>
-                      <Th>Fecha</Th>
-                      <Th>Concepto</Th>
-                      <Th>Categoría</Th>
-                      <Th isNumeric>Monto</Th>
-                    </Tr>
-                  </Thead>
+                <Box overflowX="auto" minW={0}>
+                  <Table size="sm" minW="400px">
+                    <Thead>
+                      <Tr>
+                        <Th whiteSpace="nowrap">Fecha</Th>
+                        <Th whiteSpace="nowrap">Concepto</Th>
+                        <Th whiteSpace="nowrap">Categoría</Th>
+                        <Th isNumeric whiteSpace="nowrap">Monto</Th>
+                      </Tr>
+                    </Thead>
                   <Tbody>
                     {gastos.map((gasto: any) => (
                       <Tr key={gasto.id}>
@@ -576,11 +579,12 @@ export default function AdministracionPage() {
                     ))}
                   </Tbody>
                 </Table>
+                </Box>
               </VStack>
             </TabPanel>
 
-            <TabPanel>
-              <VStack spacing={4} align="stretch">
+            <TabPanel px={0} minW={0}>
+              <VStack spacing={4} align="stretch" minW={0}>
                 <Button
                   leftIcon={<FiPlus />}
                   colorScheme="blue"
@@ -590,16 +594,17 @@ export default function AdministracionPage() {
                   Registrar Merma
                 </Button>
 
-                <Table size="sm">
-                  <Thead>
-                    <Tr>
-                      <Th>Fecha</Th>
-                      <Th>Producto</Th>
-                      <Th>Cantidad</Th>
-                      <Th>Motivo</Th>
-                      <Th isNumeric>Costo</Th>
-                    </Tr>
-                  </Thead>
+                <Box overflowX="auto" minW={0}>
+                  <Table size="sm" minW="480px">
+                    <Thead>
+                      <Tr>
+                        <Th whiteSpace="nowrap">Fecha</Th>
+                        <Th whiteSpace="nowrap">Producto</Th>
+                        <Th whiteSpace="nowrap">Cantidad</Th>
+                        <Th whiteSpace="nowrap">Motivo</Th>
+                        <Th isNumeric whiteSpace="nowrap">Costo</Th>
+                      </Tr>
+                    </Thead>
                   <Tbody>
                     {mermas.map((merma: any) => (
                       <Tr key={merma.id}>
@@ -614,6 +619,7 @@ export default function AdministracionPage() {
                     ))}
                   </Tbody>
                 </Table>
+                </Box>
               </VStack>
             </TabPanel>
 
