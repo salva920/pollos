@@ -27,6 +27,52 @@ import { useRouter, usePathname } from 'next/navigation'
 import { FiHome, FiPackage, FiShoppingCart, FiUsers, FiTruck, FiDollarSign, FiLogOut, FiUser, FiBell, FiUserCheck, FiMenu } from 'react-icons/fi'
 import { useQuery } from '@tanstack/react-query'
 
+/** Icono de pollo (cabeza + cresta) para logo tipo venta de pollos - colores rojo y amarillo */
+function ChickenLogo({ boxSize = 9 }: { boxSize?: number }) {
+  return (
+    <Box
+      bg="brand.500"
+      borderRadius="full"
+      p={1.5}
+      display="inline-flex"
+      alignItems="center"
+      justifyContent="center"
+      boxSize={boxSize}
+      flexShrink={0}
+      border="2px solid"
+      borderColor="pollo.amarillo"
+      boxShadow="0 2px 8px rgba(196, 30, 58, 0.35)"
+    >
+      <svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 32 32"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden
+      >
+        {/* Cabeza del pollo */}
+        <ellipse cx="16" cy="14" rx="10" ry="11" fill="#FACC15" />
+        {/* Cresta */}
+        <path
+          d="M8 8 Q10 4 14 6 Q16 3 18 6 Q22 4 24 8 L23 12 Q20 10 16 11 Q12 10 9 12 Z"
+          fill="#DC2626"
+        />
+        {/* Ojo */}
+        <circle cx="21" cy="13" r="2" fill="#1a1a1a" />
+        {/* Pico */}
+        <path
+          d="M6 16 L2 18 L6 20 Z"
+          fill="#F59E0B"
+          transform="rotate(-10 16 18)"
+        />
+        {/* Barbilla */}
+        <path d="M14 22 Q16 24 18 22" stroke="#DC2626" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      </svg>
+    </Box>
+  )
+}
+
 const navItems = [
   { path: '/', label: 'Dashboard', icon: FiHome },
   { path: '/productos', label: 'Productos', icon: FiPackage },
@@ -110,22 +156,29 @@ export default function Navbar() {
       boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.05)"
     >
       <Flex maxW="1600px" mx="auto" justify="space-between" align="center" gap={2}>
-        <Heading
+        <HStack
           as="button"
-          size={{ base: 'sm', md: 'md' }}
-          cursor="pointer"
+          spacing={2}
           onClick={() => router.push('/')}
-          fontWeight="700"
-          color="gray.800"
-          _hover={{ color: 'brand.600' }}
-          transition="color 0.2s"
-          whiteSpace="nowrap"
-          overflow="hidden"
-          textOverflow="ellipsis"
-          maxW={{ base: '180px', sm: '220px', md: 'none' }}
+          align="center"
+          _hover={{ opacity: 0.9 }}
+          transition="opacity 0.2s"
+          maxW={{ base: '200px', sm: '260px', md: 'none' }}
+          minW={0}
         >
-          🥚 Sistema de Alimentos
-        </Heading>
+          <ChickenLogo boxSize={9} />
+          <Heading
+            size={{ base: 'sm', md: 'md' }}
+            fontWeight="800"
+            color="gray.800"
+            whiteSpace="nowrap"
+            overflow="hidden"
+            textOverflow="ellipsis"
+          >
+            <Box as="span" color="brand.600">Sistema</Box>
+            <Box as="span" color="pollo.amarilloOscuro"> Alimentos</Box>
+          </Heading>
+        </HStack>
 
         {/* Desktop nav */}
         <HStack spacing={1} display={{ base: 'none', md: 'flex' }} flexWrap="wrap">
@@ -208,7 +261,13 @@ export default function Navbar() {
         <DrawerOverlay />
         <DrawerContent borderRadius="0 2xl 2xl 0">
           <DrawerHeader borderBottomWidth="1px">
-            🥚 Sistema de Alimentos
+            <HStack spacing={2}>
+              <ChickenLogo boxSize={10} />
+              <VStack align="start" spacing={0}>
+                <Heading size="sm" color="brand.600">Sistema</Heading>
+                <Heading size="sm" color="pollo.amarilloOscuro">Alimentos</Heading>
+              </VStack>
+            </HStack>
           </DrawerHeader>
           <DrawerBody p={2}>
             <VStack align="stretch" spacing={1}>
