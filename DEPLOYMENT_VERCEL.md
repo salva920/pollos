@@ -47,6 +47,7 @@ Añade estas variables para **Production**, **Preview** y **Development** (o sol
 |----------------|---------------------------------|--------|
 | `DATABASE_URL` | Cadena de conexión de MongoDB   | `mongodb+srv://user:pass@cluster.mongodb.net/alimentos_db?retryWrites=true&w=majority` |
 | `JWT_SECRET`   | Clave secreta para JWT (mín. 32 caracteres) | Una cadena larga y aleatoria |
+| `DOLAR_VZLA_API_KEY` | API Key para obtener tasa de cambio USD/VES automáticamente | `48e881d5a26b203190e56144f710be75bababfa0a9ec400de5b5c127ea89ac3a` |
 
 ### Cómo obtener `DATABASE_URL` (MongoDB Atlas)
 

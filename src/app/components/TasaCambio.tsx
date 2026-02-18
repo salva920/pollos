@@ -19,7 +19,7 @@ import {
   FormControl,
   FormLabel,
 } from '@chakra-ui/react'
-import { FiDollarSign, FiEdit2 } from 'react-icons/fi'
+import { FiDollarSign, FiEdit2, FiRefreshCw } from 'react-icons/fi'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { formatCurrency } from '@/lib/utils'
 
@@ -69,6 +69,36 @@ export default function TasaCambio() {
     },
   })
 
+  const syncTasaMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/tasa-cambio', {
+        method: 'PUT',
+      })
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.error || 'Error al sincronizar tasa')
+      }
+      return res.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasa-cambio'] })
+      toast({
+        title: 'Tasa sincronizada',
+        description: 'La tasa de cambio se actualizó desde la API externa',
+        status: 'success',
+        duration: 3000,
+      })
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'No se pudo sincronizar la tasa',
+        status: 'error',
+        duration: 3000,
+      })
+    },
+  })
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const tasa = parseFloat(nuevaTasa)
@@ -99,23 +129,42 @@ export default function TasaCambio() {
               <FiDollarSign />
             </Box>
             <Box minW={0}>
-              <Text fontSize="sm" color="gray.500" fontWeight="500">Tasa de Cambio</Text>
+              <HStack spacing={1} mb={0.5}>
+                <Text fontSize="sm" color="gray.500" fontWeight="500">Tasa de Cambio</Text>
+                {tasaCambio?.fuente === 'api' && (
+                  <Text fontSize="xs" color="green.600" fontWeight="600">(API)</Text>
+                )}
+              </HStack>
               <Text color="gray.800" fontWeight="700" fontSize={{ base: 'md', sm: 'lg' }} noOfLines={1}>
                 {tasaCambio?.tasa ? formatCurrency(tasaCambio.tasa, 'VES') : 'No configurada'}
               </Text>
             </Box>
           </HStack>
-          <Button
-            size="sm"
-            leftIcon={<FiEdit2 />}
-            colorScheme="brand"
-            variant="outline"
-            onClick={onOpen}
-            borderRadius="xl"
-            w={{ base: 'full', sm: 'auto' }}
-          >
-            Actualizar
-          </Button>
+          <HStack spacing={2} w={{ base: 'full', sm: 'auto' }}>
+            <Button
+              size="sm"
+              leftIcon={<FiRefreshCw />}
+              colorScheme="green"
+              variant="outline"
+              onClick={() => syncTasaMutation.mutate()}
+              borderRadius="xl"
+              isLoading={syncTasaMutation.isPending}
+              flex={{ base: 1, sm: 'none' }}
+            >
+              Sincronizar
+            </Button>
+            <Button
+              size="sm"
+              leftIcon={<FiEdit2 />}
+              colorScheme="brand"
+              variant="outline"
+              onClick={onOpen}
+              borderRadius="xl"
+              flex={{ base: 1, sm: 'none' }}
+            >
+              Manual
+            </Button>
+          </HStack>
         </Flex>
       </Box>
 
