@@ -23,6 +23,7 @@ import {
   useToast,
   Text,
   Divider,
+  Flex,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -393,13 +394,13 @@ export default function NuevaVentaPage() {
   const selectedCustomer = customers.find((c: any) => c.id === customerId)
 
   return (
-    <Container maxW="container.xl" py={6}>
+    <Container maxW="container.xl" py={{ base: 4, md: 6 }} px={{ base: 2, md: 4 }}>
       <VStack spacing={6} align="stretch">
         {/* Header */}
-        <HStack justify="space-between">
+        <Flex direction={{ base: 'column', sm: 'row' }} justify="space-between" align={{ base: 'stretch', sm: 'center' }} gap={3}>
           <HStack spacing={3}>
             <FiShoppingCart size={28} color="var(--chakra-colors-blue-500)" />
-            <Heading size="xl" fontWeight="700" color="gray.800">
+            <Heading size={{ base: 'lg', md: 'xl' }} fontWeight="700" color="gray.800">
               Procesar Venta
             </Heading>
           </HStack>
@@ -407,15 +408,17 @@ export default function NuevaVentaPage() {
             leftIcon={<FiX />}
             variant="outline"
             onClick={() => router.push('/ventas')}
+            size={{ base: 'sm', md: 'md' }}
+            w={{ base: 'full', sm: 'auto' }}
           >
             Cancelar
           </Button>
-        </HStack>
+        </Flex>
 
         <Grid templateColumns={{ base: '1fr', lg: '3fr 2fr' }} gap={6}>
           {/* Columna Izquierda: Productos Disponibles */}
           <GridItem>
-            <Box bg="white" p={6} borderRadius="2xl" boxShadow="md" border="1px solid" borderColor="gray.200">
+            <Box bg="white" p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="md" border="1px solid" borderColor="gray.200">
               <VStack spacing={4} align="stretch">
                 <HStack justify="space-between">
                   <HStack>
@@ -489,10 +492,10 @@ export default function NuevaVentaPage() {
           <GridItem>
             <VStack spacing={6} align="stretch">
               {/* Selección de Cliente */}
-              <Box bg="white" p={6} borderRadius="2xl" boxShadow="md" border="1px solid" borderColor="gray.200">
-                <VStack spacing={4} align="stretch">
-                  <HStack>
-                    <FiUser size={20} color="var(--chakra-colors-blue-500)" />
+<Box bg="white" p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="md" border="1px solid" borderColor="gray.200">
+              <VStack spacing={4} align="stretch">
+                <HStack>
+                  <FiUser size={20} color="var(--chakra-colors-blue-500)" />
                     <Heading size="md" fontWeight="600">
                       Cliente
                     </Heading>
@@ -589,7 +592,7 @@ export default function NuevaVentaPage() {
               </Box>
 
               {/* Detalle de Venta */}
-              <Box bg="white" p={6} borderRadius="2xl" boxShadow="md" border="1px solid" borderColor="gray.200">
+              <Box bg="white" p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="md" border="1px solid" borderColor="gray.200">
                 <VStack spacing={4} align="stretch">
                   <HStack justify="space-between">
                     <HStack>

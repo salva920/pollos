@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Container,
+  Flex,
   Heading,
   Table,
   Thead,
@@ -200,14 +201,14 @@ export default function ClientesPage() {
   }
 
   return (
-    <Container maxW="container.xl">
+    <Container maxW="container.xl" px={{ base: 2, md: 4 }} py={{ base: 4, md: 6 }}>
       <VStack spacing={6} align="stretch">
-        <HStack justify="space-between">
-          <Heading>Gestión de Clientes</Heading>
-          <Button leftIcon={<FiPlus />} colorScheme="blue" onClick={() => handleOpen()}>
+        <Flex direction={{ base: 'column', sm: 'row' }} justify="space-between" align={{ base: 'stretch', sm: 'center' }} gap={3}>
+          <Heading size={{ base: 'lg', md: 'xl' }}>Gestión de Clientes</Heading>
+          <Button leftIcon={<FiPlus />} colorScheme="blue" onClick={() => handleOpen()} size={{ base: 'sm', md: 'md' }} w={{ base: 'full', sm: 'auto' }}>
             Nuevo Cliente
           </Button>
-        </HStack>
+        </Flex>
 
         <InputGroup>
           <InputLeftElement pointerEvents="none">
@@ -220,8 +221,8 @@ export default function ClientesPage() {
           />
         </InputGroup>
 
-        <Box overflowX="auto" bg="white" p={6} rounded="lg" shadow="md">
-          <Table>
+        <Box overflowX="auto" bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md">
+          <Table size="sm" minW="560px">
             <Thead>
               <Tr>
                 <Th>Nombre</Th>

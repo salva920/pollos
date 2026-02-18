@@ -53,9 +53,9 @@ export default function AlertasPage() {
   }
 
   return (
-    <Container maxW="container.xl">
+    <Container maxW="container.xl" px={{ base: 2, md: 4 }} py={{ base: 4, md: 6 }}>
       <VStack spacing={6} align="stretch">
-        <Heading>Centro de Alertas</Heading>
+        <Heading size={{ base: 'lg', md: 'xl' }}>Centro de Alertas</Heading>
 
         {alertas.length === 0 ? (
           <Alert status="success">

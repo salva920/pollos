@@ -7,23 +7,42 @@ import {
   Button,
   Heading,
   HStack,
+  VStack,
   useToast,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
   Avatar,
-  Text,
   Badge,
+  IconButton,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  useDisclosure,
 } from '@chakra-ui/react'
 import { useRouter, usePathname } from 'next/navigation'
-import { FiHome, FiPackage, FiShoppingCart, FiUsers, FiTruck, FiDollarSign, FiLogOut, FiUser, FiBell, FiUserCheck } from 'react-icons/fi'
+import { FiHome, FiPackage, FiShoppingCart, FiUsers, FiTruck, FiDollarSign, FiLogOut, FiUser, FiBell, FiUserCheck, FiMenu } from 'react-icons/fi'
 import { useQuery } from '@tanstack/react-query'
+
+const navItems = [
+  { path: '/', label: 'Dashboard', icon: FiHome },
+  { path: '/productos', label: 'Productos', icon: FiPackage },
+  { path: '/ventas', label: 'Ventas', icon: FiShoppingCart },
+  { path: '/clientes', label: 'Clientes', icon: FiUsers },
+  { path: '/proveedores', label: 'Proveedores', icon: FiTruck },
+  { path: '/administracion', label: 'Administración', icon: FiDollarSign },
+  { path: '/usuarios', label: 'Usuarios', icon: FiUserCheck },
+  { path: '/alertas', label: 'Alertas', icon: FiBell },
+]
 
 export default function Navbar() {
   const router = useRouter()
   const pathname = usePathname()
   const toast = useToast()
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   // Obtener alertas no leídas
   const { data: alertas = [] } = useQuery({
@@ -58,146 +77,79 @@ export default function Navbar() {
 
   const isActive = (path: string) => pathname === path
 
+  const NavButton = ({ path, label, icon: Icon }: { path: string; label: string; icon: React.ElementType }) => (
+    <Button
+      leftIcon={<Icon />}
+      variant={isActive(path) ? 'solid' : 'ghost'}
+      colorScheme="brand"
+      color={isActive(path) ? 'white' : 'gray.700'}
+      bg={isActive(path) ? 'brand.500' : undefined}
+      _hover={{ bg: isActive(path) ? 'brand.600' : 'gray.100' }}
+      onClick={() => { router.push(path); onClose() }}
+      size="sm"
+      borderRadius="xl"
+      justifyContent="flex-start"
+      w={{ base: 'full', md: 'auto' }}
+    >
+      {label}
+      {path === '/alertas' && alertas.length > 0 && (
+        <Badge ml={2} colorScheme="red" borderRadius="full" fontSize="xs">
+          {alertas.length}
+        </Badge>
+      )}
+    </Button>
+  )
+
   return (
     <Box
       bg="white"
       borderBottom="1px"
       borderColor="blackAlpha.100"
-      px={4}
+      px={{ base: 3, md: 4 }}
       py={3}
       boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.05)"
     >
-      <Flex maxW="1600px" mx="auto" justify="space-between" align="center">
+      <Flex maxW="1600px" mx="auto" justify="space-between" align="center" gap={2}>
         <Heading
-          size="md"
+          as="button"
+          size={{ base: 'sm', md: 'md' }}
           cursor="pointer"
           onClick={() => router.push('/')}
           fontWeight="700"
           color="gray.800"
           _hover={{ color: 'brand.600' }}
           transition="color 0.2s"
+          whiteSpace="nowrap"
+          overflow="hidden"
+          textOverflow="ellipsis"
+          maxW={{ base: '180px', sm: '220px', md: 'none' }}
         >
           🥚 Sistema de Alimentos
         </Heading>
 
-        <HStack spacing={1}>
-          <Button
-            leftIcon={<FiHome />}
-            variant={isActive('/') ? 'solid' : 'ghost'}
-            colorScheme="brand"
-            color={isActive('/') ? 'white' : 'gray.700'}
-            bg={isActive('/') ? 'brand.500' : undefined}
-            _hover={{ bg: isActive('/') ? 'brand.600' : 'gray.100' }}
-            onClick={() => router.push('/')}
-            size="sm"
-            borderRadius="xl"
-          >
-            Dashboard
-          </Button>
-
-          <Button
-            leftIcon={<FiPackage />}
-            variant="ghost"
-            color={isActive('/productos') ? 'brand.600' : 'gray.700'}
-            bg={isActive('/productos') ? 'brand.50' : undefined}
-            _hover={{ bg: 'gray.100' }}
-            onClick={() => router.push('/productos')}
-            size="sm"
-            borderRadius="xl"
-          >
-            Productos
-          </Button>
-
-          <Button
-            leftIcon={<FiShoppingCart />}
-            variant="ghost"
-            color={isActive('/ventas') ? 'brand.600' : 'gray.700'}
-            bg={isActive('/ventas') ? 'brand.50' : undefined}
-            _hover={{ bg: 'gray.100' }}
-            onClick={() => router.push('/ventas')}
-            size="sm"
-            borderRadius="xl"
-          >
-            Ventas
-          </Button>
-
-          <Button
-            leftIcon={<FiUsers />}
-            variant="ghost"
-            color={isActive('/clientes') ? 'brand.600' : 'gray.700'}
-            bg={isActive('/clientes') ? 'brand.50' : undefined}
-            _hover={{ bg: 'gray.100' }}
-            onClick={() => router.push('/clientes')}
-            size="sm"
-            borderRadius="xl"
-          >
-            Clientes
-          </Button>
-
-          <Button
-            leftIcon={<FiTruck />}
-            variant="ghost"
-            color={isActive('/proveedores') ? 'brand.600' : 'gray.700'}
-            bg={isActive('/proveedores') ? 'brand.50' : undefined}
-            _hover={{ bg: 'gray.100' }}
-            onClick={() => router.push('/proveedores')}
-            size="sm"
-            borderRadius="xl"
-          >
-            Proveedores
-          </Button>
-
-          <Button
-            leftIcon={<FiDollarSign />}
-            variant="ghost"
-            color={isActive('/administracion') ? 'brand.600' : 'gray.700'}
-            bg={isActive('/administracion') ? 'brand.50' : undefined}
-            _hover={{ bg: 'gray.100' }}
-            onClick={() => router.push('/administracion')}
-            size="sm"
-            borderRadius="xl"
-          >
-            Administración
-          </Button>
-
-          <Button
-            leftIcon={<FiUserCheck />}
-            variant="ghost"
-            color={isActive('/usuarios') ? 'brand.600' : 'gray.700'}
-            bg={isActive('/usuarios') ? 'brand.50' : undefined}
-            _hover={{ bg: 'gray.100' }}
-            onClick={() => router.push('/usuarios')}
-            size="sm"
-            borderRadius="xl"
-          >
-            Usuarios
-          </Button>
-
-          <Button
-            leftIcon={<FiBell />}
-            variant="ghost"
-            color="gray.700"
-            _hover={{ bg: 'gray.100' }}
-            onClick={() => router.push('/alertas')}
-            size="sm"
-            position="relative"
-            borderRadius="xl"
-          >
-            Alertas
-            {alertas.length > 0 && (
-              <Badge
-                position="absolute"
-                top="-1"
-                right="-1"
-                colorScheme="red"
-                borderRadius="full"
-                fontSize="xs"
-              >
-                {alertas.length}
-              </Badge>
-            )}
-          </Button>
-
+        {/* Desktop nav */}
+        <HStack spacing={1} display={{ base: 'none', md: 'flex' }} flexWrap="wrap">
+          {navItems.map(({ path, label, icon: Icon }) => (
+            <Button
+              key={path}
+              leftIcon={<Icon />}
+              variant={isActive(path) ? 'solid' : 'ghost'}
+              colorScheme="brand"
+              color={isActive(path) ? 'white' : 'gray.700'}
+              bg={isActive(path) ? 'brand.500' : undefined}
+              _hover={{ bg: isActive(path) ? 'brand.600' : 'gray.100' }}
+              onClick={() => router.push(path)}
+              size="sm"
+              borderRadius="xl"
+            >
+              {label}
+              {path === '/alertas' && alertas.length > 0 && (
+                <Badge ml={1} colorScheme="red" borderRadius="full" fontSize="xs">
+                  {alertas.length}
+                </Badge>
+              )}
+            </Button>
+          ))}
           <Menu>
             <MenuButton
               as={Button}
@@ -220,7 +172,53 @@ export default function Navbar() {
             </MenuList>
           </Menu>
         </HStack>
+
+        {/* Mobile: hamburger + user menu */}
+        <HStack display={{ base: 'flex', md: 'none' }} spacing={1}>
+          <IconButton
+            aria-label="Abrir menú"
+            icon={<FiMenu />}
+            variant="ghost"
+            size="sm"
+            onClick={onOpen}
+            colorScheme="brand"
+          />
+          <Menu>
+            <MenuButton
+              as={Button}
+              variant="ghost"
+              color="gray.700"
+              size="sm"
+              borderRadius="xl"
+              _hover={{ bg: 'gray.100' }}
+            >
+              <Avatar size="xs" bg="brand.400" />
+            </MenuButton>
+            <MenuList color="gray.800" borderRadius="xl" shadow="soft" border="1px" borderColor="blackAlpha.100">
+              <MenuItem icon={<FiUser />}>Mi Perfil</MenuItem>
+              <MenuItem icon={<FiLogOut />} onClick={handleLogout}>
+                Cerrar Sesión
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </HStack>
       </Flex>
+
+      <Drawer placement="left" onClose={onClose} isOpen={isOpen} size="xs">
+        <DrawerOverlay />
+        <DrawerContent borderRadius="0 2xl 2xl 0">
+          <DrawerHeader borderBottomWidth="1px">
+            🥚 Sistema de Alimentos
+          </DrawerHeader>
+          <DrawerBody p={2}>
+            <VStack align="stretch" spacing={1}>
+              {navItems.map(({ path, label, icon: Icon }) => (
+                <NavButton key={path} path={path} label={label} icon={Icon} />
+              ))}
+            </VStack>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Box>
   )
 }

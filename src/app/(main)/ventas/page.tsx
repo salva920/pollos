@@ -4,6 +4,7 @@ import React from 'react'
 import {
   Box,
   Container,
+  Flex,
   Heading,
   Table,
   Thead,
@@ -44,17 +45,17 @@ export default function VentasPage() {
   }
 
   return (
-    <Container maxW="container.xl">
+    <Container maxW="container.xl" px={{ base: 2, md: 4 }} py={{ base: 4, md: 6 }}>
       <VStack spacing={6} align="stretch">
-        <HStack justify="space-between">
-          <Heading>Historial de Ventas</Heading>
-          <Button leftIcon={<FiPlus />} colorScheme="blue" onClick={() => router.push('/ventas/nueva')}>
+        <Flex direction={{ base: 'column', sm: 'row' }} justify="space-between" align={{ base: 'stretch', sm: 'center' }} gap={3}>
+          <Heading size={{ base: 'lg', md: 'xl' }}>Historial de Ventas</Heading>
+          <Button leftIcon={<FiPlus />} colorScheme="blue" onClick={() => router.push('/ventas/nueva')} size={{ base: 'sm', md: 'md' }} w={{ base: 'full', sm: 'auto' }}>
             Nueva Venta
           </Button>
-        </HStack>
+        </Flex>
 
-        <Box overflowX="auto" bg="white" p={6} rounded="lg" shadow="md">
-          <Table>
+        <Box overflowX="auto" bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md">
+          <Table size="sm" minW="600px">
             <Thead>
               <Tr>
                 <Th>Factura</Th>

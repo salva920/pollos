@@ -86,14 +86,20 @@ export default function TasaCambio() {
         p={4}
         boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)"
       >
-        <HStack justify="space-between" flexWrap="wrap" gap={2}>
-          <HStack>
-            <Box p={2} bg="brand.50" borderRadius="xl" color="brand.500">
+        <Flex
+          direction={{ base: 'column', sm: 'row' }}
+          justify="space-between"
+          align={{ base: 'stretch', sm: 'center' }}
+          gap={3}
+          flexWrap="wrap"
+        >
+          <HStack flex={1} minW={0}>
+            <Box p={2} bg="brand.50" borderRadius="xl" color="brand.500" flexShrink={0}>
               <FiDollarSign />
             </Box>
-            <Box>
+            <Box minW={0}>
               <Text fontSize="sm" color="gray.500" fontWeight="500">Tasa de Cambio</Text>
-              <Text color="gray.800" fontWeight="700" fontSize="lg">
+              <Text color="gray.800" fontWeight="700" fontSize={{ base: 'md', sm: 'lg' }} noOfLines={1}>
                 {tasaCambio?.tasa ? formatCurrency(tasaCambio.tasa, 'VES') : 'No configurada'}
               </Text>
             </Box>
@@ -105,10 +111,11 @@ export default function TasaCambio() {
             variant="outline"
             onClick={onOpen}
             borderRadius="xl"
+            w={{ base: 'full', sm: 'auto' }}
           >
             Actualizar
           </Button>
-        </HStack>
+        </Flex>
       </Box>
 
       <Modal isOpen={isOpen} onClose={onClose}>

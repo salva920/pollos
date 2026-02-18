@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Container,
+  Flex,
   Heading,
   Table,
   Thead,
@@ -216,10 +217,10 @@ export default function UsuariosPage() {
   }
 
   return (
-    <Container maxW="container.xl">
+    <Container maxW="container.xl" px={{ base: 2, md: 4 }} py={{ base: 4, md: 6 }}>
       <VStack spacing={6} align="stretch">
-        <HStack justify="space-between">
-          <Heading size="xl" fontWeight="700" color="gray.800">
+        <Flex direction={{ base: 'column', sm: 'row' }} justify="space-between" align={{ base: 'stretch', sm: 'center' }} gap={3}>
+          <Heading size={{ base: 'lg', md: 'xl' }} fontWeight="700" color="gray.800">
             Usuarios y empleados
           </Heading>
           <Button
@@ -227,10 +228,12 @@ export default function UsuariosPage() {
             colorScheme="brand"
             onClick={() => handleOpen()}
             borderRadius="xl"
+            size={{ base: 'sm', md: 'md' }}
+            w={{ base: 'full', sm: 'auto' }}
           >
             Nuevo usuario
           </Button>
-        </HStack>
+        </Flex>
 
         <Text color="gray.600">
           Gestiona quién puede iniciar sesión en el sistema. Crea usuarios (vendedor, almacén, administrador) y activa o desactiva cuentas.
@@ -248,8 +251,8 @@ export default function UsuariosPage() {
           />
         </InputGroup>
 
-        <Box overflowX="auto" bg="white" p={6} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" borderWidth="1px" borderColor="blackAlpha.100">
-          <Table variant="simple">
+        <Box overflowX="auto" bg="white" p={{ base: 3, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" borderWidth="1px" borderColor="blackAlpha.100">
+          <Table variant="simple" size="sm" minW="520px">
             <Thead>
               <Tr>
                 <Th>Nombre</Th>

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import {
   Box,
   Container,
+  Flex,
   Grid,
   Heading,
   SimpleGrid,
@@ -454,18 +455,25 @@ export default function HomePage() {
   const totalStock = products.reduce((total, p) => total + (p.stock || 0), 0)
 
   return (
-    <Container maxW="container.xl" py={8}>
-      <VStack spacing={8} align="stretch">
-        <HStack justify="space-between" flexWrap="wrap" gap={4}>
-          <Heading size="xl" fontWeight="700" color="gray.800">Dashboard</Heading>
-          <HStack>
+    <Container maxW="container.xl" py={{ base: 4, md: 8 }} px={{ base: 2, md: 4 }}>
+      <VStack spacing={{ base: 5, md: 8 }} align="stretch">
+        <Flex
+          direction={{ base: 'column', sm: 'row' }}
+          justify="space-between"
+          align={{ base: 'stretch', sm: 'center' }}
+          gap={4}
+          flexWrap="wrap"
+        >
+          <Heading size={{ base: 'lg', md: 'xl' }} fontWeight="700" color="gray.800">Dashboard</Heading>
+          <HStack spacing={2} flexWrap="wrap">
             <Button
               leftIcon={<FiShoppingCart />}
               colorScheme="brand"
               onClick={() => router.push('/ventas/nueva')}
-              size="md"
+              size={{ base: 'sm', md: 'md' }}
               borderRadius="xl"
               fontWeight="600"
+              flex={{ base: 1, sm: 'none' }}
             >
               Nueva Venta
             </Button>
@@ -484,7 +492,7 @@ export default function HomePage() {
               Actualizar
             </Button>
           </HStack>
-        </HStack>
+        </Flex>
 
         {/* Tasa de cambio */}
         <TasaCambio />
@@ -612,10 +620,11 @@ export default function HomePage() {
           </Stat>
         </SimpleGrid>
 
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={6}>
-          <Box p={6} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="blackAlpha.100" bg="white">
+        <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={6}>
+          <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="blackAlpha.100" bg="white" overflow="hidden">
             <Heading size="md" mb={4} fontWeight="600" color="gray.800">Productos más vendidos</Heading>
-            <Table size="sm" variant="simple">
+            <Box overflowX="auto">
+            <Table size="sm" variant="simple" minW="200px">
               <Thead>
                 <Tr>
                   <Th>Producto</Th>
@@ -637,11 +646,13 @@ export default function HomePage() {
                 )}
               </Tbody>
             </Table>
+            </Box>
           </Box>
 
-          <Box p={6} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="blackAlpha.100" bg="white">
+          <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="blackAlpha.100" bg="white" overflow="hidden">
             <Heading size="md" mb={4} fontWeight="600" color="gray.800">Últimas ventas</Heading>
-            <Table size="sm" variant="simple">
+            <Box overflowX="auto">
+            <Table size="sm" variant="simple" minW="200px">
               <Thead>
                 <Tr>
                   <Th>Cliente</Th>
@@ -665,16 +676,17 @@ export default function HomePage() {
                 )}
               </Tbody>
             </Table>
+            </Box>
           </Box>
         </Grid>
 
         {/* Productos con bajo stock */}
         {lowStockProducts.length > 0 && (
-          <Box p={6} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="orange.200" bg="orange.50">
+          <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="orange.200" bg="orange.50" overflowX="auto">
             <Heading size="md" mb={4} color="orange.700" fontWeight="600">
               ⚠️ Productos con Stock Bajo
             </Heading>
-            <Table size="sm">
+            <Table size="sm" minW="300px">
               <Thead>
                 <Tr>
                   <Th>Producto</Th>
