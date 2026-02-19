@@ -509,15 +509,15 @@ export default function ProductosPage() {
 
   if (isLoading) {
     return (
-      <Center h="80vh">
-        <Spinner size="xl" />
+      <Center h="80vh" bgGradient="linear(to-b, brand.50 0%, gray.50 100%)">
+        <Spinner size="xl" color="brand.500" thickness="3px" />
       </Center>
     )
   }
 
   return (
     <Container maxW="container.xl" px={{ base: 2, md: 4 }} py={{ base: 4, md: 6 }} minW={0}>
-      <VStack spacing={6} align="stretch" minW={0}>
+      <VStack spacing={6} align="stretch" bgGradient="linear(to-b, brand.50 0%, transparent 120px)" borderRadius="2xl" py={1} minW={0}>
         <Flex
           direction={{ base: 'column', sm: 'row' }}
           justify="space-between"
@@ -525,18 +525,22 @@ export default function ProductosPage() {
           gap={3}
           flexWrap="wrap"
         >
-          <Heading size={{ base: 'lg', md: 'xl' }} minW={0} noOfLines={1}>Gestión de Productos</Heading>
+          <Flex align="center" gap={3}>
+            <Box w="4px" h={{ base: 8, md: 10 }} bgGradient="linear(to-b, brand.500, pollo.amarilloOscuro)" borderRadius="full" flexShrink={0} />
+            <Heading size={{ base: 'lg', md: 'xl' }} fontWeight="800" color="brand.600" minW={0} noOfLines={1}>Gestión de Productos</Heading>
+          </Flex>
           <HStack spacing={2} flexWrap="wrap">
             <Button
-              colorScheme="orange"
+              colorScheme="brand"
               variant="outline"
               size="sm"
               onClick={() => syncLotesMutation.mutate()}
               isLoading={syncLotesMutation.isPending}
+              fontWeight="600"
             >
               Sincronizar Lotes
             </Button>
-            <Button leftIcon={<FiPlus />} colorScheme="blue" onClick={() => requireAdminPassword({ type: 'open' })} size={{ base: 'sm', md: 'md' }}>
+            <Button leftIcon={<FiPlus />} colorScheme="brand" onClick={() => requireAdminPassword({ type: 'open' })} size={{ base: 'sm', md: 'md' }} fontWeight="600">
               Nuevo Producto
             </Button>
           </HStack>
@@ -554,18 +558,18 @@ export default function ProductosPage() {
         </InputGroup>
 
         {/* Vista Desktop - Tabla */}
-        <Box display={{ base: 'none', md: 'block' }} overflowY="visible" bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md" minW={0}>
+        <Box display={{ base: 'none', md: 'block' }} overflowY="visible" bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md" border="1px solid" borderColor="blackAlpha.100" minW={0}>
           <Table size="sm">
             <Thead>
               <Tr>
-                <Th whiteSpace="nowrap">Nombre</Th>
-                <Th whiteSpace="nowrap">Categoría</Th>
-                <Th whiteSpace="nowrap">Unidad</Th>
-                <Th whiteSpace="nowrap">Precio Venta</Th>
-                <Th isNumeric whiteSpace="nowrap">Stock</Th>
-                <Th isNumeric whiteSpace="nowrap">Stock Mín</Th>
-                <Th whiteSpace="nowrap">Perecedero</Th>
-                <Th whiteSpace="nowrap">Acciones</Th>
+                <Th whiteSpace="nowrap" fontWeight="bold" color="gray.800">Nombre</Th>
+                <Th whiteSpace="nowrap" fontWeight="bold" color="gray.800">Categoría</Th>
+                <Th whiteSpace="nowrap" fontWeight="bold" color="gray.800">Unidad</Th>
+                <Th whiteSpace="nowrap" fontWeight="bold" color="gray.800">Precio Venta</Th>
+                <Th isNumeric whiteSpace="nowrap" fontWeight="bold" color="gray.800">Stock</Th>
+                <Th isNumeric whiteSpace="nowrap" fontWeight="bold" color="gray.800">Stock Mín</Th>
+                <Th whiteSpace="nowrap" fontWeight="bold" color="gray.800">Perecedero</Th>
+                <Th whiteSpace="nowrap" fontWeight="bold" color="gray.800">Acciones</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -573,7 +577,7 @@ export default function ProductosPage() {
                 <Tr key={product.id}>
                   <Td fontWeight="bold">{product.name}</Td>
                   <Td>
-                    <Badge colorScheme="blue">{getCategoryName(product.category)}</Badge>
+                    <Badge colorScheme="brand">{getCategoryName(product.category)}</Badge>
                   </Td>
                   <Td>{product.unit}</Td>
                   <Td>
@@ -609,7 +613,7 @@ export default function ProductosPage() {
                         aria-label="Entrada"
                         icon={<FiPackage />}
                         size="sm"
-                        colorScheme="blue"
+                        colorScheme="brand"
                         variant="ghost"
                         onClick={() => handleOpenLoteModal(product)}
                         title="Agregar nuevo lote"
@@ -651,7 +655,7 @@ export default function ProductosPage() {
               <VStack align="stretch" spacing={2}>
                 <Text fontWeight="bold" fontSize="lg">{product.name}</Text>
                 <HStack spacing={2} flexWrap="wrap">
-                  <Badge colorScheme="blue">{getCategoryName(product.category)}</Badge>
+                  <Badge colorScheme="brand">{getCategoryName(product.category)}</Badge>
                   <Badge colorScheme={product.stock <= product.minStock ? 'red' : 'green'}>
                     Stock: {product.stock} {product.unit}
                   </Badge>
@@ -683,7 +687,7 @@ export default function ProductosPage() {
                     aria-label="Entrada"
                     icon={<FiPackage />}
                     size="sm"
-                    colorScheme="blue"
+                    colorScheme="brand"
                     variant="ghost"
                     onClick={() => handleOpenLoteModal(product)}
                     title="Agregar nuevo lote"
@@ -712,8 +716,8 @@ export default function ProductosPage() {
       {/* Modal contraseña para no administradores */}
       <Modal isOpen={showPasswordModal} onClose={() => { setShowPasswordModal(false); setPendingAction(null); setPasswordError(''); }}>
         <ModalOverlay />
-        <ModalContent borderRadius="2xl">
-          <ModalHeader>
+        <ModalContent borderRadius="2xl" borderTop="4px solid" borderTopColor="brand.500">
+          <ModalHeader fontWeight="700" color="brand.700">
             <HStack>
               <FiLock />
               <Text>Contraseña de administración</Text>
@@ -770,8 +774,8 @@ export default function ProductosPage() {
 
       <Modal isOpen={isOpen} onClose={handleClose} size="xl">
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
+        <ModalContent borderRadius="2xl" borderTop="4px solid" borderTopColor="brand.500">
+          <ModalHeader fontWeight="700" color="brand.700">
             {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
           </ModalHeader>
           <ModalCloseButton />
@@ -986,9 +990,10 @@ export default function ProductosPage() {
 
                 <Button
                   type="submit"
-                  colorScheme="blue"
+                  colorScheme="brand"
                   width="full"
                   isLoading={createMutation.isPending || updateMutation.isPending}
+                  fontWeight="600"
                 >
                   {editingProduct ? 'Actualizar' : 'Crear'} Producto
                 </Button>
@@ -1001,8 +1006,8 @@ export default function ProductosPage() {
       {/* Modal para agregar nuevo lote */}
       <Modal isOpen={isLoteModalOpen} onClose={handleCloseLoteModal} size="lg">
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
+        <ModalContent borderRadius="2xl" borderTop="4px solid" borderTopColor="brand.500">
+          <ModalHeader fontWeight="700" color="brand.700">
             Agregar Nuevo Lote - {selectedProductForLote?.name}
           </ModalHeader>
           <ModalCloseButton />
@@ -1124,10 +1129,11 @@ export default function ProductosPage() {
               </FormControl>
 
               <Button
-                colorScheme="blue"
+                colorScheme="brand"
                 width="full"
                 onClick={handleSubmitLote}
                 isLoading={addLoteMutation.isPending}
+                fontWeight="600"
               >
                 Agregar Lote
               </Button>
