@@ -38,6 +38,15 @@ export default function VentasPage() {
     },
   })
 
+  const { data: tasaCambio } = useQuery({
+    queryKey: ['tasa-cambio'],
+    queryFn: async () => {
+      const res = await fetch('/api/tasa-cambio')
+      if (!res.ok) return { tasa: 0 }
+      return res.json()
+    },
+  })
+
   if (isLoading) {
     return (
       <Center h="80vh" bgGradient="linear(to-b, brand.50 0%, gray.50 100%)">
@@ -80,8 +89,30 @@ export default function VentasPage() {
                 <Tr key={sale.id}>
                   <Td fontWeight="bold">{sale.invoiceNumber}</Td>
                   <Td>{sale.customer?.name || 'N/A'}</Td>
-                  <Td isNumeric fontWeight="bold" color="brand.600">{formatCurrency(sale.total)}</Td>
-                  <Td isNumeric fontWeight="bold" color="green.600">{formatCurrency(sale.ganancia)}</Td>
+                  <Td isNumeric>
+                    <VStack align="end" spacing={0}>
+                      <Text fontWeight="bold" color="brand.600">
+                        {formatCurrency(sale.total)}
+                      </Text>
+                      {tasaCambio?.tasa > 0 && (
+                        <Text fontSize="xs" color="gray.600">
+                          ≈ {formatCurrency(sale.total * tasaCambio.tasa, 'VES')}
+                        </Text>
+                      )}
+                    </VStack>
+                  </Td>
+                  <Td isNumeric>
+                    <VStack align="end" spacing={0}>
+                      <Text fontWeight="bold" color="green.600">
+                        {formatCurrency(sale.ganancia)}
+                      </Text>
+                      {tasaCambio?.tasa > 0 && (
+                        <Text fontSize="xs" color="gray.600">
+                          ≈ {formatCurrency(sale.ganancia * tasaCambio.tasa, 'VES')}
+                        </Text>
+                      )}
+                    </VStack>
+                  </Td>
                   <Td>{sale.paymentMethod}</Td>
                   <Td>
                     <Badge colorScheme={sale.status === 'completada' ? 'green' : 'red'}>
@@ -121,11 +152,25 @@ export default function VentasPage() {
                 </Flex>
                 <Flex justify="space-between">
                   <Text color="gray.600" fontSize="sm">Total:</Text>
-                  <Text fontWeight="bold" color="brand.600">{formatCurrency(sale.total)}</Text>
+                  <VStack align="end" spacing={0}>
+                    <Text fontWeight="bold" color="brand.600">{formatCurrency(sale.total)}</Text>
+                    {tasaCambio?.tasa > 0 && (
+                      <Text fontSize="xs" color="gray.600">
+                        ≈ {formatCurrency(sale.total * tasaCambio.tasa, 'VES')}
+                      </Text>
+                    )}
+                  </VStack>
                 </Flex>
                 <Flex justify="space-between">
                   <Text color="gray.600" fontSize="sm">Ganancia:</Text>
-                  <Text fontWeight="bold" color="green.600">{formatCurrency(sale.ganancia)}</Text>
+                  <VStack align="end" spacing={0}>
+                    <Text fontWeight="bold" color="green.600">{formatCurrency(sale.ganancia)}</Text>
+                    {tasaCambio?.tasa > 0 && (
+                      <Text fontSize="xs" color="gray.600">
+                        ≈ {formatCurrency(sale.ganancia * tasaCambio.tasa, 'VES')}
+                      </Text>
+                    )}
+                  </VStack>
                 </Flex>
                 <Flex justify="space-between">
                   <Text color="gray.600" fontSize="sm">Pago:</Text>
