@@ -43,6 +43,7 @@ import {
   Alert,
   AlertIcon,
   Badge,
+  Divider,
 } from '@chakra-ui/react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { formatCurrency, formatDateShort } from '@/lib/utils'
@@ -518,8 +519,9 @@ export default function AdministracionPage() {
 
           <TabPanels minW={0}>
             <TabPanel px={0} minW={0}>
+              {/* Vista Desktop - Tabla */}
               <Box 
-                overflowX="auto" 
+                display={{ base: 'none', md: 'block' }}
                 minW={0}
                 bg="white"
                 borderRadius="2xl"
@@ -528,7 +530,7 @@ export default function AdministracionPage() {
                 borderColor="gray.200"
                 overflow="hidden"
               >
-                <Table size="md" minW="560px" variant="simple">
+                <Table size="md" variant="simple">
                   <Thead>
                     <Tr bg="brand.50" borderBottom="2px solid" borderBottomColor="brand.200">
                       <Th whiteSpace="nowrap" fontWeight="bold" color="brand.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Fecha</Th>
@@ -568,6 +570,51 @@ export default function AdministracionPage() {
                   </Tbody>
                 </Table>
               </Box>
+
+              {/* Vista Mobile - Tarjetas */}
+              <VStack display={{ base: 'flex', md: 'none' }} spacing={3} align="stretch">
+                {transacciones.map((tx: any) => (
+                  <Box
+                    key={tx.id}
+                    bg="white"
+                    p={4}
+                    borderRadius="2xl"
+                    boxShadow="0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
+                    border="1px solid"
+                    borderColor="gray.200"
+                  >
+                    <VStack align="stretch" spacing={2}>
+                      <Flex justify="space-between" align="center">
+                        <Text fontSize="xs" color="gray.500">{formatDateShort(tx.fecha)}</Text>
+                        <Badge colorScheme={tx.tipo === 'venta' ? 'green' : tx.tipo === 'gasto' ? 'red' : 'gray'} size="sm" fontWeight="600">
+                          {tx.tipo}
+                        </Badge>
+                      </Flex>
+                      <Text fontWeight="500" color="gray.800" fontSize="sm">{tx.concepto}</Text>
+                      <Divider />
+                      <SimpleGrid columns={2} spacing={2}>
+                        {tx.entrada > 0 && (
+                          <Box>
+                            <Text fontSize="xs" color="gray.600">Entrada:</Text>
+                            <Text fontWeight="bold" fontSize="sm" color="green.600">{formatCurrency(tx.entrada)}</Text>
+                          </Box>
+                        )}
+                        {tx.salida > 0 && (
+                          <Box>
+                            <Text fontSize="xs" color="gray.600">Salida:</Text>
+                            <Text fontWeight="bold" fontSize="sm" color="red.600">{formatCurrency(tx.salida)}</Text>
+                          </Box>
+                        )}
+                      </SimpleGrid>
+                      <Divider />
+                      <Flex justify="space-between" align="center">
+                        <Text fontSize="sm" color="gray.600" fontWeight="bold">Saldo:</Text>
+                        <Text fontWeight="700" fontSize="md" color="gray.900">{formatCurrency(tx.saldo)}</Text>
+                      </Flex>
+                    </VStack>
+                  </Box>
+                ))}
+              </VStack>
             </TabPanel>
 
             <TabPanel px={0} minW={0}>
@@ -582,8 +629,9 @@ export default function AdministracionPage() {
                   Registrar Gasto
                 </Button>
 
+                {/* Vista Desktop - Tabla Gastos */}
                 <Box 
-                  overflowX="auto" 
+                  display={{ base: 'none', md: 'block' }}
                   minW={0}
                   bg="white"
                   borderRadius="2xl"
@@ -592,7 +640,7 @@ export default function AdministracionPage() {
                   borderColor="gray.200"
                   overflow="hidden"
                 >
-                  <Table size="md" minW="400px" variant="simple">
+                  <Table size="md" variant="simple">
                     <Thead>
                       <Tr bg="red.50" borderBottom="2px solid" borderBottomColor="red.200">
                         <Th whiteSpace="nowrap" fontWeight="bold" color="red.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Fecha</Th>
@@ -624,6 +672,34 @@ export default function AdministracionPage() {
                   </Tbody>
                 </Table>
                 </Box>
+
+                {/* Vista Mobile - Tarjetas Gastos */}
+                <VStack display={{ base: 'flex', md: 'none' }} spacing={3} align="stretch">
+                  {gastos.map((gasto: any) => (
+                    <Box
+                      key={gasto.id}
+                      bg="white"
+                      p={4}
+                      borderRadius="2xl"
+                      boxShadow="0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
+                      border="1px solid"
+                      borderColor="gray.200"
+                    >
+                      <VStack align="stretch" spacing={2}>
+                        <Flex justify="space-between" align="center">
+                          <Text fontSize="xs" color="gray.500">{formatDateShort(gasto.fecha)}</Text>
+                          <Badge colorScheme="red" size="sm" fontWeight="600">{gasto.categoria}</Badge>
+                        </Flex>
+                        <Text fontWeight="500" color="gray.800">{gasto.concepto}</Text>
+                        <Divider />
+                        <Flex justify="space-between" align="center">
+                          <Text fontSize="sm" color="gray.600" fontWeight="bold">Monto:</Text>
+                          <Text color="red.600" fontWeight="700" fontSize="md">{formatCurrency(gasto.monto)}</Text>
+                        </Flex>
+                      </VStack>
+                    </Box>
+                  ))}
+                </VStack>
               </VStack>
             </TabPanel>
 
@@ -639,8 +715,9 @@ export default function AdministracionPage() {
                   Registrar Merma
                 </Button>
 
+                {/* Vista Desktop - Tabla Mermas */}
                 <Box 
-                  overflowX="auto" 
+                  display={{ base: 'none', md: 'block' }}
                   minW={0}
                   bg="white"
                   borderRadius="2xl"
@@ -649,7 +726,7 @@ export default function AdministracionPage() {
                   borderColor="gray.200"
                   overflow="hidden"
                 >
-                  <Table size="md" minW="480px" variant="simple">
+                  <Table size="md" variant="simple">
                     <Thead>
                       <Tr bg="orange.50" borderBottom="2px solid" borderBottomColor="orange.200">
                         <Th whiteSpace="nowrap" fontWeight="bold" color="orange.700" py={4} px={4} fontSize="sm" textTransform="uppercase" letterSpacing="wide">Fecha</Th>
@@ -681,6 +758,38 @@ export default function AdministracionPage() {
                   </Tbody>
                 </Table>
                 </Box>
+
+                {/* Vista Mobile - Tarjetas Mermas */}
+                <VStack display={{ base: 'flex', md: 'none' }} spacing={3} align="stretch">
+                  {mermas.map((merma: any) => (
+                    <Box
+                      key={merma.id}
+                      bg="white"
+                      p={4}
+                      borderRadius="2xl"
+                      boxShadow="0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
+                      border="1px solid"
+                      borderColor="gray.200"
+                    >
+                      <VStack align="stretch" spacing={2}>
+                        <Flex justify="space-between" align="center">
+                          <Text fontSize="xs" color="gray.500">{formatDateShort(merma.fecha)}</Text>
+                          <Badge colorScheme="orange" size="sm">{merma.motivo}</Badge>
+                        </Flex>
+                        <Text fontWeight="bold" color="gray.800">{merma.productName}</Text>
+                        <Divider />
+                        <Flex justify="space-between">
+                          <Text color="gray.600" fontSize="sm">Cantidad:</Text>
+                          <Text fontWeight="600">{merma.cantidad}</Text>
+                        </Flex>
+                        <Flex justify="space-between" align="center">
+                          <Text fontSize="sm" color="gray.600" fontWeight="bold">Costo:</Text>
+                          <Text color="orange.600" fontWeight="700" fontSize="md">{formatCurrency(merma.costoTotal)}</Text>
+                        </Flex>
+                      </VStack>
+                    </Box>
+                  ))}
+                </VStack>
               </VStack>
             </TabPanel>
 

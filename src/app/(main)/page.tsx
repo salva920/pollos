@@ -628,91 +628,141 @@ export default function HomePage() {
         <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={6}>
           <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="blackAlpha.100" bg="white" overflow="hidden">
             <Heading size="md" mb={4} fontWeight="bold" color="gray.800">Productos más vendidos</Heading>
-            <Box overflowX="auto">
-            <Table size="sm" variant="simple" minW="200px">
-              <Thead>
-                <Tr>
-                  <Th fontWeight="bold" color="gray.800">Producto</Th>
-                  <Th isNumeric fontWeight="bold" color="gray.800">Cantidad</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {topProducts.length > 0 ? topProducts.map(([name, quantity]) => (
-                  <Tr key={name}>
-                    <Td>{name}</Td>
-                    <Td isNumeric fontWeight="bold" color="brand.600">{quantity}</Td>
-                  </Tr>
-                )) : (
+            {/* Vista Desktop */}
+            <Box display={{ base: 'none', md: 'block' }}>
+              <Table size="sm" variant="simple">
+                <Thead>
                   <Tr>
-                    <Td colSpan={2} textAlign="center" color="gray.500">
-                      No hay ventas registradas
-                    </Td>
+                    <Th fontWeight="bold" color="gray.800">Producto</Th>
+                    <Th isNumeric fontWeight="bold" color="gray.800">Cantidad</Th>
                   </Tr>
-                )}
-              </Tbody>
-            </Table>
+                </Thead>
+                <Tbody>
+                  {topProducts.length > 0 ? topProducts.map(([name, quantity]) => (
+                    <Tr key={name}>
+                      <Td>{name}</Td>
+                      <Td isNumeric fontWeight="bold" color="brand.600">{quantity}</Td>
+                    </Tr>
+                  )) : (
+                    <Tr>
+                      <Td colSpan={2} textAlign="center" color="gray.500">
+                        No hay ventas registradas
+                      </Td>
+                    </Tr>
+                  )}
+                </Tbody>
+              </Table>
             </Box>
+            {/* Vista Mobile */}
+            <VStack display={{ base: 'flex', md: 'none' }} spacing={2} align="stretch">
+              {topProducts.length > 0 ? topProducts.map(([name, quantity]) => (
+                <Flex key={name} justify="space-between" p={2} bg="gray.50" borderRadius="md">
+                  <Text fontWeight="500">{name}</Text>
+                  <Badge colorScheme="brand" fontSize="sm">{quantity}</Badge>
+                </Flex>
+              )) : (
+                <Text textAlign="center" color="gray.500" py={4}>No hay ventas registradas</Text>
+              )}
+            </VStack>
           </Box>
 
           <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="blackAlpha.100" bg="white" overflow="hidden">
             <Heading size="md" mb={4} fontWeight="bold" color="gray.800">Últimas ventas</Heading>
-            <Box overflowX="auto">
-            <Table size="sm" variant="simple" minW="200px">
-              <Thead>
-                <Tr>
-                  <Th fontWeight="bold" color="gray.800">Cliente</Th>
-                  <Th isNumeric fontWeight="bold" color="gray.800">Total</Th>
-                  <Th fontWeight="bold" color="gray.800">Fecha</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {recentSales.length > 0 ? recentSales.map((sale) => (
-                  <Tr key={sale.id}>
-                    <Td>{sale.customer?.name || 'Cliente desconocido'}</Td>
-                    <Td isNumeric fontWeight="bold" color="brand.600">{formatCurrency(sale.total || 0)}</Td>
-                    <Td fontSize="xs">{formatDateShort(sale.createdAt)}</Td>
-                  </Tr>
-                )) : (
+            {/* Vista Desktop */}
+            <Box display={{ base: 'none', md: 'block' }}>
+              <Table size="sm" variant="simple">
+                <Thead>
                   <Tr>
-                    <Td colSpan={3} textAlign="center" color="gray.500">
-                      No hay ventas registradas
-                    </Td>
+                    <Th fontWeight="bold" color="gray.800">Cliente</Th>
+                    <Th isNumeric fontWeight="bold" color="gray.800">Total</Th>
+                    <Th fontWeight="bold" color="gray.800">Fecha</Th>
                   </Tr>
-                )}
-              </Tbody>
-            </Table>
+                </Thead>
+                <Tbody>
+                  {recentSales.length > 0 ? recentSales.map((sale) => (
+                    <Tr key={sale.id}>
+                      <Td>{sale.customer?.name || 'Cliente desconocido'}</Td>
+                      <Td isNumeric fontWeight="bold" color="brand.600">{formatCurrency(sale.total || 0)}</Td>
+                      <Td fontSize="xs">{formatDateShort(sale.createdAt)}</Td>
+                    </Tr>
+                  )) : (
+                    <Tr>
+                      <Td colSpan={3} textAlign="center" color="gray.500">
+                        No hay ventas registradas
+                      </Td>
+                    </Tr>
+                  )}
+                </Tbody>
+              </Table>
             </Box>
+            {/* Vista Mobile */}
+            <VStack display={{ base: 'flex', md: 'none' }} spacing={2} align="stretch">
+              {recentSales.length > 0 ? recentSales.map((sale) => (
+                <Box key={sale.id} p={3} bg="gray.50" borderRadius="md">
+                  <Text fontWeight="500" mb={1}>{sale.customer?.name || 'Cliente desconocido'}</Text>
+                  <Flex justify="space-between" align="center">
+                    <Text fontSize="xs" color="gray.600">{formatDateShort(sale.createdAt)}</Text>
+                    <Text fontWeight="bold" color="brand.600">{formatCurrency(sale.total || 0)}</Text>
+                  </Flex>
+                </Box>
+              )) : (
+                <Text textAlign="center" color="gray.500" py={4}>No hay ventas registradas</Text>
+              )}
+            </VStack>
           </Box>
         </Grid>
 
         {/* Productos con bajo stock */}
         {lowStockProducts.length > 0 && (
-          <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="orange.200" bg="orange.50" overflowX="auto">
+          <Box p={{ base: 4, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" border="1px solid" borderColor="orange.200" bg="orange.50">
             <Heading size="md" mb={4} color="gray.800" fontWeight="bold">
               ⚠️ Productos con Stock Bajo
             </Heading>
-            <Table size="sm" minW="300px">
-              <Thead>
-                <Tr>
-                  <Th>Producto</Th>
-                  <Th>Categoría</Th>
-                  <Th isNumeric>Stock Actual</Th>
-                  <Th isNumeric>Stock Mínimo</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {lowStockProducts.map((product) => (
-                  <Tr key={product.id}>
-                    <Td fontWeight="bold">{product.name}</Td>
-                    <Td>
-                      <Badge colorScheme="blue">{product.category}</Badge>
-                    </Td>
-                    <Td isNumeric color="orange.600" fontWeight="bold">{product.stock}</Td>
-                    <Td isNumeric>{product.minStock}</Td>
+            {/* Vista Desktop */}
+            <Box display={{ base: 'none', md: 'block' }}>
+              <Table size="sm">
+                <Thead>
+                  <Tr>
+                    <Th>Producto</Th>
+                    <Th>Categoría</Th>
+                    <Th isNumeric>Stock Actual</Th>
+                    <Th isNumeric>Stock Mínimo</Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
+                </Thead>
+                <Tbody>
+                  {lowStockProducts.map((product) => (
+                    <Tr key={product.id}>
+                      <Td fontWeight="bold">{product.name}</Td>
+                      <Td>
+                        <Badge colorScheme="blue">{product.category}</Badge>
+                      </Td>
+                      <Td isNumeric color="orange.600" fontWeight="bold">{product.stock}</Td>
+                      <Td isNumeric>{product.minStock}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Box>
+            {/* Vista Mobile */}
+            <VStack display={{ base: 'flex', md: 'none' }} spacing={3} align="stretch">
+              {lowStockProducts.map((product) => (
+                <Box key={product.id} bg="white" p={3} borderRadius="md" border="1px solid" borderColor="orange.200">
+                  <Text fontWeight="bold" mb={2}>{product.name}</Text>
+                  <Flex justify="space-between" mb={1}>
+                    <Text color="gray.600" fontSize="sm">Categoría:</Text>
+                    <Badge colorScheme="blue">{product.category}</Badge>
+                  </Flex>
+                  <Flex justify="space-between" mb={1}>
+                    <Text color="gray.600" fontSize="sm">Stock Actual:</Text>
+                    <Text color="orange.600" fontWeight="bold">{product.stock}</Text>
+                  </Flex>
+                  <Flex justify="space-between">
+                    <Text color="gray.600" fontSize="sm">Stock Mínimo:</Text>
+                    <Text fontWeight="500">{product.minStock}</Text>
+                  </Flex>
+                </Box>
+              ))}
+            </VStack>
           </Box>
         )}
       </VStack>

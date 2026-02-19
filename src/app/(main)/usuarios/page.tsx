@@ -37,6 +37,7 @@ import {
   AlertIcon,
   Text,
   Switch,
+  Divider,
 } from '@chakra-ui/react'
 import { FiPlus, FiEdit2, FiUserCheck, FiSearch } from 'react-icons/fi'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -251,8 +252,9 @@ export default function UsuariosPage() {
           />
         </InputGroup>
 
-        <Box overflowX="auto" bg="white" p={{ base: 3, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" borderWidth="1px" borderColor="blackAlpha.100">
-          <Table variant="simple" size="sm" minW="520px">
+        {/* Vista Desktop - Tabla */}
+        <Box display={{ base: 'none', md: 'block' }} bg="white" p={{ base: 3, md: 6 }} borderRadius="2xl" boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)" borderWidth="1px" borderColor="blackAlpha.100">
+          <Table variant="simple" size="sm">
             <Thead>
               <Tr>
                 <Th>Nombre</Th>
@@ -306,6 +308,67 @@ export default function UsuariosPage() {
             </Tbody>
           </Table>
         </Box>
+
+        {/* Vista Mobile - Tarjetas */}
+        <VStack display={{ base: 'flex', md: 'none' }} spacing={3} align="stretch">
+          {filteredUsers.map((user: any) => (
+            <Box
+              key={user.id}
+              bg="white"
+              p={4}
+              borderRadius="2xl"
+              boxShadow="0 1px 3px 0 rgb(0 0 0 / 0.06)"
+              borderWidth="1px"
+              borderColor="blackAlpha.100"
+            >
+              <VStack align="stretch" spacing={2}>
+                <Flex justify="space-between" align="center">
+                  <Text fontWeight="bold" fontSize="lg">{user.name}</Text>
+                  <Badge
+                    colorScheme={
+                      user.role === 'admin' ? 'purple' : user.role === 'almacen' ? 'orange' : 'blue'
+                    }
+                  >
+                    {ROLES.find((r) => r.value === user.role)?.label || user.role}
+                  </Badge>
+                </Flex>
+                <Divider />
+                <Flex justify="space-between">
+                  <Text color="gray.600" fontSize="sm">Usuario:</Text>
+                  <Text fontWeight="500">{user.username}</Text>
+                </Flex>
+                <Flex justify="space-between" align="center">
+                  <Text color="gray.600" fontSize="sm">Estado:</Text>
+                  <HStack spacing={2}>
+                    <Switch
+                      isChecked={user.active}
+                      onChange={() =>
+                        toggleActiveMutation.mutate({
+                          id: user.id,
+                          active: !user.active,
+                        })
+                      }
+                      colorScheme="brand"
+                      size="sm"
+                    />
+                    <Text fontSize="sm">{user.active ? 'Activo' : 'Inactivo'}</Text>
+                  </HStack>
+                </Flex>
+                <Divider />
+                <HStack justify="flex-end">
+                  <IconButton
+                    aria-label="Editar"
+                    icon={<FiEdit2 />}
+                    size="sm"
+                    variant="ghost"
+                    colorScheme="brand"
+                    onClick={() => handleOpen(user)}
+                  />
+                </HStack>
+              </VStack>
+            </Box>
+          ))}
+        </VStack>
       </VStack>
 
       <Modal isOpen={isOpen} onClose={handleClose}>

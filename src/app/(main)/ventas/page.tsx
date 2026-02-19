@@ -17,6 +17,9 @@ import {
   Spinner,
   Center,
   Button,
+  SimpleGrid,
+  Text,
+  Divider,
 } from '@chakra-ui/react'
 import { useQuery } from '@tanstack/react-query'
 import { formatCurrency, formatDateShort } from '@/lib/utils'
@@ -58,8 +61,9 @@ export default function VentasPage() {
           </Button>
         </Flex>
 
-        <Box overflowX="auto" bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md" border="1px solid" borderColor="blackAlpha.100">
-          <Table size="sm" minW="600px">
+        {/* Vista Desktop - Tabla */}
+        <Box display={{ base: 'none', md: 'block' }} bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md" border="1px solid" borderColor="blackAlpha.100">
+          <Table size="sm">
             <Thead>
               <Tr>
                 <Th fontWeight="bold" color="gray.800">Factura</Th>
@@ -90,6 +94,51 @@ export default function VentasPage() {
             </Tbody>
           </Table>
         </Box>
+
+        {/* Vista Mobile - Tarjetas */}
+        <VStack display={{ base: 'flex', md: 'none' }} spacing={3} align="stretch">
+          {sales.map((sale: any) => (
+            <Box
+              key={sale.id}
+              bg="white"
+              p={4}
+              rounded="lg"
+              shadow="md"
+              border="1px solid"
+              borderColor="blackAlpha.100"
+            >
+              <VStack align="stretch" spacing={2}>
+                <Flex justify="space-between" align="center">
+                  <Text fontWeight="bold" fontSize="lg">{sale.invoiceNumber}</Text>
+                  <Badge colorScheme={sale.status === 'completada' ? 'green' : 'red'}>
+                    {sale.status}
+                  </Badge>
+                </Flex>
+                <Divider />
+                <Flex justify="space-between">
+                  <Text color="gray.600" fontSize="sm">Cliente:</Text>
+                  <Text fontWeight="500">{sale.customer?.name || 'N/A'}</Text>
+                </Flex>
+                <Flex justify="space-between">
+                  <Text color="gray.600" fontSize="sm">Total:</Text>
+                  <Text fontWeight="bold" color="brand.600">{formatCurrency(sale.total)}</Text>
+                </Flex>
+                <Flex justify="space-between">
+                  <Text color="gray.600" fontSize="sm">Ganancia:</Text>
+                  <Text fontWeight="bold" color="green.600">{formatCurrency(sale.ganancia)}</Text>
+                </Flex>
+                <Flex justify="space-between">
+                  <Text color="gray.600" fontSize="sm">Pago:</Text>
+                  <Text>{sale.paymentMethod}</Text>
+                </Flex>
+                <Flex justify="space-between">
+                  <Text color="gray.600" fontSize="sm">Fecha:</Text>
+                  <Text fontSize="sm">{formatDateShort(sale.createdAt)}</Text>
+                </Flex>
+              </VStack>
+            </Box>
+          ))}
+        </VStack>
       </VStack>
     </Container>
   )

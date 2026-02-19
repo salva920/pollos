@@ -33,6 +33,8 @@ import {
   Select,
   InputGroup,
   InputLeftElement,
+  Text,
+  Divider,
 } from '@chakra-ui/react'
 import { FiPlus, FiEdit2, FiTrash2, FiSearch } from 'react-icons/fi'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -224,8 +226,9 @@ export default function ClientesPage() {
           />
         </InputGroup>
 
-        <Box overflowX="auto" bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md" border="1px solid" borderColor="blackAlpha.100">
-          <Table size="sm" minW="560px">
+        {/* Vista Desktop - Tabla */}
+        <Box display={{ base: 'none', md: 'block' }} bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md" border="1px solid" borderColor="blackAlpha.100">
+          <Table size="sm">
             <Thead>
               <Tr>
                 <Th fontWeight="bold" color="gray.800">Nombre</Th>
@@ -271,6 +274,64 @@ export default function ClientesPage() {
             </Tbody>
           </Table>
         </Box>
+
+        {/* Vista Mobile - Tarjetas */}
+        <VStack display={{ base: 'flex', md: 'none' }} spacing={3} align="stretch">
+          {filteredCustomers.map((customer: any) => (
+            <Box
+              key={customer.id}
+              bg="white"
+              p={4}
+              rounded="lg"
+              shadow="md"
+              border="1px solid"
+              borderColor="blackAlpha.100"
+            >
+              <VStack align="stretch" spacing={2}>
+                <Flex justify="space-between" align="center">
+                  <Text fontWeight="bold" fontSize="lg">{customer.name}</Text>
+                  <Badge colorScheme={customer.type === 'mayorista' ? 'purple' : 'brand'}>
+                    {customer.type === 'mayorista' ? 'Mayorista' : 'Detal'}
+                  </Badge>
+                </Flex>
+                <Divider />
+                <Flex justify="space-between">
+                  <Text color="gray.600" fontSize="sm">Cédula:</Text>
+                  <Text fontWeight="500">{customer.cedula}</Text>
+                </Flex>
+                {customer.phone && (
+                  <Flex justify="space-between">
+                    <Text color="gray.600" fontSize="sm">Teléfono:</Text>
+                    <Text>{customer.phone}</Text>
+                  </Flex>
+                )}
+                {customer.email && (
+                  <Flex justify="space-between">
+                    <Text color="gray.600" fontSize="sm">Email:</Text>
+                    <Text fontSize="sm" isTruncated maxW="200px">{customer.email}</Text>
+                  </Flex>
+                )}
+                <Divider />
+                <HStack justify="flex-end" spacing={2}>
+                  <IconButton
+                    aria-label="Editar"
+                    icon={<FiEdit2 />}
+                    size="sm"
+                    onClick={() => handleOpen(customer)}
+                  />
+                  <IconButton
+                    aria-label="Eliminar"
+                    icon={<FiTrash2 />}
+                    size="sm"
+                    colorScheme="red"
+                    variant="ghost"
+                    onClick={() => handleDelete(customer.id)}
+                  />
+                </HStack>
+              </VStack>
+            </Box>
+          ))}
+        </VStack>
       </VStack>
 
       <Modal isOpen={isOpen} onClose={handleClose}>

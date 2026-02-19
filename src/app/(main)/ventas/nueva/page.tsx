@@ -45,6 +45,7 @@ import {
   useColorModeValue,
   Spinner,
   Center,
+  SimpleGrid,
 } from '@chakra-ui/react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { FiTrash2, FiPlus, FiSearch, FiShoppingCart, FiUser, FiPackage, FiSave, FiX } from 'react-icons/fi'
@@ -434,8 +435,9 @@ export default function NuevaVentaPage() {
                   </Badge>
                 </Flex>
 
-                <Box maxH="600px" overflowY="auto" overflowX="auto" minW={0}>
-                  <Table size="sm" variant="simple" minW="520px">
+                {/* Vista Desktop - Tabla Productos */}
+                <Box display={{ base: 'none', md: 'block' }} maxH="600px" overflowY="auto" minW={0}>
+                  <Table size="sm" variant="simple">
                     <Thead position="sticky" top={0} bg="gray.50" zIndex={1}>
                       <Tr>
                         <Th whiteSpace="nowrap" fontWeight="bold" color="gray.800">Producto</Th>
@@ -486,6 +488,54 @@ export default function NuevaVentaPage() {
                     </Tbody>
                   </Table>
                 </Box>
+
+                {/* Vista Mobile - Tarjetas Productos */}
+                <VStack display={{ base: 'flex', md: 'none' }} spacing={3} align="stretch" maxH="600px" overflowY="auto">
+                  {availableProducts.map((product: any) => (
+                    <Box
+                      key={product.id}
+                      bg="white"
+                      p={4}
+                      rounded="lg"
+                      shadow="sm"
+                      border="1px solid"
+                      borderColor="gray.200"
+                    >
+                      <VStack align="stretch" spacing={2}>
+                        <Text fontWeight="bold" fontSize="md">{product.name}</Text>
+                        <HStack spacing={2} flexWrap="wrap">
+                          <Badge colorScheme="brand" size="sm">{product.category}</Badge>
+                          <Badge colorScheme={product.stock > product.minStock ? 'green' : 'red'} size="sm">
+                            Stock: {product.stock} {product.unit}
+                          </Badge>
+                        </HStack>
+                        <Divider />
+                        <Flex justify="space-between" align="center">
+                          <Text color="gray.600" fontSize="sm">Precio:</Text>
+                          <VStack align="end" spacing={0}>
+                            <Text fontWeight="bold" fontSize="sm">
+                              {formatCurrency(product.pricePerUnit, 'USD')}
+                            </Text>
+                            {tasaCambio?.tasa > 0 && (
+                              <Text fontSize="xs" color="gray.600">
+                                ≈ {formatCurrency(product.pricePerUnit * tasaCambio.tasa, 'VES')}
+                              </Text>
+                            )}
+                          </VStack>
+                        </Flex>
+                        <Button
+                          size="sm"
+                          leftIcon={<FiPlus />}
+                          colorScheme="brand"
+                          onClick={() => handleSelectProduct(product)}
+                          w="full"
+                        >
+                          Agregar
+                        </Button>
+                      </VStack>
+                    </Box>
+                  ))}
+                </VStack>
               </VStack>
             </Box>
           </GridItem>
@@ -619,79 +669,81 @@ export default function NuevaVentaPage() {
                       </VStack>
                     </Center>
                   ) : (
-                    <Box maxH="400px" overflowY="auto">
-                      <Table size="sm" variant="simple">
-                        <Thead position="sticky" top={0} bg="gray.50" zIndex={1}>
-                          <Tr>
-                            <Th fontWeight="bold" color="gray.800">Producto</Th>
-                            <Th isNumeric fontWeight="bold" color="gray.800">Cantidad</Th>
-                            <Th isNumeric fontWeight="bold" color="gray.800">Precio</Th>
-                            <Th isNumeric fontWeight="bold" color="gray.800">Subtotal</Th>
-                            <Th width="50px"></Th>
-                          </Tr>
-                        </Thead>
-                        <Tbody>
-                          {items.map((item, index) => {
-                            const product = products.find((p: any) => p.id === item.productId)
-                            const lotesDisponibles = product?.lotes?.filter((l: any) => l.stockActual > 0 && l.estado !== 'vencido') || []
-                            const isExpanded = expandedProductIndex === index
-                            
-                            return (
-                              <React.Fragment key={index}>
-                                <Tr>
-                                  <Td>
-                                    <VStack align="start" spacing={1}>
-                                      <Text fontWeight="medium" fontSize="sm">
-                                        {product?.name || 'Producto'}
-                                      </Text>
-                                      {lotesDisponibles.length > 0 && (
-                                        <Button
-                                          size="xs"
-                                          variant="link"
-                                          colorScheme="brand"
-                                          onClick={() => setExpandedProductIndex(isExpanded ? null : index)}
-                                        >
-                                          {isExpanded ? 'Ocultar' : 'Ver'} lotes ({lotesDisponibles.length})
-                                        </Button>
-                                      )}
-                                    </VStack>
-                                  </Td>
-                                  <Td isNumeric fontWeight="bold">{item.quantity}</Td>
-                                  <Td>
-                                    <VStack align="end" spacing={0}>
-                                      <Text fontWeight="bold" fontSize="sm">
-                                        {formatCurrency(item.price, 'USD')}
-                                      </Text>
-                                      {tasaCambio?.tasa > 0 && (
-                                        <Text fontSize="xs" color="gray.600">
-                                          ≈ {formatCurrency(item.price * tasaCambio.tasa, 'VES')}
+                    <>
+                      {/* Vista Desktop - Tabla Detalle */}
+                      <Box display={{ base: 'none', md: 'block' }} maxH="400px" overflowY="auto">
+                        <Table size="sm" variant="simple">
+                          <Thead position="sticky" top={0} bg="gray.50" zIndex={1}>
+                            <Tr>
+                              <Th fontWeight="bold" color="gray.800">Producto</Th>
+                              <Th isNumeric fontWeight="bold" color="gray.800">Cantidad</Th>
+                              <Th isNumeric fontWeight="bold" color="gray.800">Precio</Th>
+                              <Th isNumeric fontWeight="bold" color="gray.800">Subtotal</Th>
+                              <Th width="50px"></Th>
+                            </Tr>
+                          </Thead>
+                          <Tbody>
+                            {items.map((item, index) => {
+                              const product = products.find((p: any) => p.id === item.productId)
+                              const lotesDisponibles = product?.lotes?.filter((l: any) => l.stockActual > 0 && l.estado !== 'vencido') || []
+                              const isExpanded = expandedProductIndex === index
+                              
+                              return (
+                                <React.Fragment key={index}>
+                                  <Tr>
+                                    <Td>
+                                      <VStack align="start" spacing={1}>
+                                        <Text fontWeight="medium" fontSize="sm">
+                                          {product?.name || 'Producto'}
                                         </Text>
-                                      )}
-                                    </VStack>
-                                  </Td>
-                                  <Td>
-                                    <VStack align="end" spacing={0}>
-                                      <Text fontWeight="bold" fontSize="sm">
-                                        {formatCurrency(item.quantity * item.price, 'USD')}
-                                      </Text>
-                                      {tasaCambio?.tasa > 0 && (
-                                        <Text fontSize="xs" color="gray.600">
-                                          ≈ {formatCurrency(item.quantity * item.price * tasaCambio.tasa, 'VES')}
+                                        {lotesDisponibles.length > 0 && (
+                                          <Button
+                                            size="xs"
+                                            variant="link"
+                                            colorScheme="brand"
+                                            onClick={() => setExpandedProductIndex(isExpanded ? null : index)}
+                                          >
+                                            {isExpanded ? 'Ocultar' : 'Ver'} lotes ({lotesDisponibles.length})
+                                          </Button>
+                                        )}
+                                      </VStack>
+                                    </Td>
+                                    <Td isNumeric fontWeight="bold">{item.quantity}</Td>
+                                    <Td>
+                                      <VStack align="end" spacing={0}>
+                                        <Text fontWeight="bold" fontSize="sm">
+                                          {formatCurrency(item.price, 'USD')}
                                         </Text>
-                                      )}
-                                    </VStack>
-                                  </Td>
-                                  <Td>
-                                    <IconButton
-                                      aria-label="Eliminar"
-                                      icon={<FiTrash2 />}
-                                      size="sm"
-                                      colorScheme="red"
-                                      variant="ghost"
-                                      onClick={() => removeItem(index)}
-                                    />
-                                  </Td>
-                                </Tr>
+                                        {tasaCambio?.tasa > 0 && (
+                                          <Text fontSize="xs" color="gray.600">
+                                            ≈ {formatCurrency(item.price * tasaCambio.tasa, 'VES')}
+                                          </Text>
+                                        )}
+                                      </VStack>
+                                    </Td>
+                                    <Td>
+                                      <VStack align="end" spacing={0}>
+                                        <Text fontWeight="bold" fontSize="sm">
+                                          {formatCurrency(item.quantity * item.price, 'USD')}
+                                        </Text>
+                                        {tasaCambio?.tasa > 0 && (
+                                          <Text fontSize="xs" color="gray.600">
+                                            ≈ {formatCurrency(item.quantity * item.price * tasaCambio.tasa, 'VES')}
+                                          </Text>
+                                        )}
+                                      </VStack>
+                                    </Td>
+                                    <Td>
+                                      <IconButton
+                                        aria-label="Eliminar"
+                                        icon={<FiTrash2 />}
+                                        size="sm"
+                                        colorScheme="red"
+                                        variant="ghost"
+                                        onClick={() => removeItem(index)}
+                                      />
+                                    </Td>
+                                  </Tr>
                                 {product && lotesDisponibles.length > 0 && (
                                   <Tr>
                                     <Td colSpan={5} p={0}>
@@ -812,6 +864,124 @@ export default function NuevaVentaPage() {
                         </Tbody>
                       </Table>
                     </Box>
+
+                    {/* Vista Mobile - Tarjetas Detalle */}
+                    <VStack display={{ base: 'flex', md: 'none' }} spacing={3} align="stretch" maxH="400px" overflowY="auto">
+                      {items.map((item, index) => {
+                        const product = products.find((p: any) => p.id === item.productId)
+                        const lotesDisponibles = product?.lotes?.filter((l: any) => l.stockActual > 0 && l.estado !== 'vencido') || []
+                        const isExpanded = expandedProductIndex === index
+                        
+                        return (
+                          <Box
+                            key={index}
+                            bg="white"
+                            p={4}
+                            rounded="lg"
+                            shadow="sm"
+                            border="1px solid"
+                            borderColor="gray.200"
+                          >
+                            <VStack align="stretch" spacing={2}>
+                              <Flex justify="space-between" align="start">
+                                <Text fontWeight="bold" fontSize="md" flex={1}>{product?.name || 'Producto'}</Text>
+                                <IconButton
+                                  aria-label="Eliminar"
+                                  icon={<FiTrash2 />}
+                                  size="sm"
+                                  colorScheme="red"
+                                  variant="ghost"
+                                  onClick={() => removeItem(index)}
+                                />
+                              </Flex>
+                              {lotesDisponibles.length > 0 && (
+                                <Button
+                                  size="xs"
+                                  variant="link"
+                                  colorScheme="brand"
+                                  onClick={() => setExpandedProductIndex(isExpanded ? null : index)}
+                                  alignSelf="flex-start"
+                                >
+                                  {isExpanded ? 'Ocultar' : 'Ver'} lotes ({lotesDisponibles.length})
+                                </Button>
+                              )}
+                              <Divider />
+                              <Flex justify="space-between">
+                                <Text color="gray.600" fontSize="sm">Cantidad:</Text>
+                                <Text fontWeight="bold">{item.quantity}</Text>
+                              </Flex>
+                              <Flex justify="space-between">
+                                <Text color="gray.600" fontSize="sm">Precio:</Text>
+                                <VStack align="end" spacing={0}>
+                                  <Text fontWeight="bold" fontSize="sm">
+                                    {formatCurrency(item.price, 'USD')}
+                                  </Text>
+                                  {tasaCambio?.tasa > 0 && (
+                                    <Text fontSize="xs" color="gray.600">
+                                      ≈ {formatCurrency(item.price * tasaCambio.tasa, 'VES')}
+                                    </Text>
+                                  )}
+                                </VStack>
+                              </Flex>
+                              <Divider />
+                              <Flex justify="space-between" align="center">
+                                <Text fontSize="sm" color="gray.600" fontWeight="bold">Subtotal:</Text>
+                                <VStack align="end" spacing={0}>
+                                  <Text fontWeight="bold" fontSize="md" color="brand.600">
+                                    {formatCurrency(item.quantity * item.price, 'USD')}
+                                  </Text>
+                                  {tasaCambio?.tasa > 0 && (
+                                    <Text fontSize="xs" color="gray.600">
+                                      ≈ {formatCurrency(item.quantity * item.price * tasaCambio.tasa, 'VES')}
+                                    </Text>
+                                  )}
+                                </VStack>
+                              </Flex>
+                              {product && lotesDisponibles.length > 0 && (
+                                <Collapse in={isExpanded} animateOpacity>
+                                  <Box bg={collapseBg} p={3} borderRadius="md" border="1px solid" borderColor="gray.200" mt={2}>
+                                    <Text fontWeight="bold" fontSize="xs" color="gray.700" mb={2}>
+                                      Información de Lotes - {product.name}
+                                    </Text>
+                                    <Box overflowX="auto">
+                                      <Table size="xs" variant="simple">
+                                        <Thead>
+                                          <Tr>
+                                            <Th fontSize="xs">Lote</Th>
+                                            <Th fontSize="xs">Stock</Th>
+                                            <Th isNumeric fontSize="xs">P. Compra</Th>
+                                            <Th isNumeric fontSize="xs">P. Venta</Th>
+                                            <Th isNumeric fontSize="xs">Ganancia</Th>
+                                          </Tr>
+                                        </Thead>
+                                        <Tbody>
+                                          {lotesDisponibles.map((lote: any) => {
+                                            const precioVenta = product.pricePerUnit
+                                            const gananciaUnit = precioVenta - lote.precioCompra
+                                            return (
+                                              <Tr key={lote.id}>
+                                                <Td fontSize="xs">{lote.loteNumber}</Td>
+                                                <Td fontSize="xs">{lote.stockActual}</Td>
+                                                <Td isNumeric fontSize="xs">{formatCurrency(lote.precioCompra, 'USD')}</Td>
+                                                <Td isNumeric fontSize="xs">{formatCurrency(precioVenta, 'USD')}</Td>
+                                                <Td isNumeric fontSize="xs" color={gananciaUnit >= 0 ? 'green.600' : 'red.600'}>
+                                                  {formatCurrency(gananciaUnit, 'USD')}
+                                                </Td>
+                                              </Tr>
+                                            )
+                                          })}
+                                        </Tbody>
+                                      </Table>
+                                    </Box>
+                                  </Box>
+                                </Collapse>
+                              )}
+                            </VStack>
+                          </Box>
+                        )
+                      })}
+                    </VStack>
+                    </>
                   )}
 
                   {/* Total */}

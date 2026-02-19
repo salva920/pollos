@@ -38,6 +38,7 @@ import {
   Alert,
   AlertIcon,
   Text,
+  Divider,
 } from '@chakra-ui/react'
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiLock, FiPackage } from 'react-icons/fi'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -552,8 +553,9 @@ export default function ProductosPage() {
           />
         </InputGroup>
 
-        <Box overflowX="auto" overflowY="visible" bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md" minW={0}>
-          <Table size="sm" minW="640px">
+        {/* Vista Desktop - Tabla */}
+        <Box display={{ base: 'none', md: 'block' }} overflowY="visible" bg="white" p={{ base: 3, md: 6 }} rounded="lg" shadow="md" minW={0}>
+          <Table size="sm">
             <Thead>
               <Tr>
                 <Th whiteSpace="nowrap">Nombre</Th>
@@ -633,6 +635,78 @@ export default function ProductosPage() {
             </Tbody>
           </Table>
         </Box>
+
+        {/* Vista Mobile - Tarjetas */}
+        <VStack display={{ base: 'flex', md: 'none' }} spacing={3} align="stretch">
+          {filteredProducts.map((product: any) => (
+            <Box
+              key={product.id}
+              bg="white"
+              p={4}
+              rounded="lg"
+              shadow="md"
+              border="1px solid"
+              borderColor="blackAlpha.100"
+            >
+              <VStack align="stretch" spacing={2}>
+                <Text fontWeight="bold" fontSize="lg">{product.name}</Text>
+                <HStack spacing={2} flexWrap="wrap">
+                  <Badge colorScheme="blue">{getCategoryName(product.category)}</Badge>
+                  <Badge colorScheme={product.stock <= product.minStock ? 'red' : 'green'}>
+                    Stock: {product.stock} {product.unit}
+                  </Badge>
+                  {product.isPerishable && (
+                    <Badge colorScheme="orange">Perecedero</Badge>
+                  )}
+                </HStack>
+                <Divider />
+                <Flex justify="space-between">
+                  <Text color="gray.600" fontSize="sm">Precio:</Text>
+                  <VStack align="end" spacing={0}>
+                    <Text fontWeight="bold" fontSize="sm">
+                      {formatCurrency(product.pricePerUnit, 'USD')}
+                    </Text>
+                    {tasaCambio?.tasa > 0 && (
+                      <Text fontSize="xs" color="gray.600">
+                        ≈ {formatCurrency(product.pricePerUnit * tasaCambio.tasa, 'VES')}
+                      </Text>
+                    )}
+                  </VStack>
+                </Flex>
+                <Flex justify="space-between">
+                  <Text color="gray.600" fontSize="sm">Stock Mínimo:</Text>
+                  <Text fontWeight="500">{product.minStock}</Text>
+                </Flex>
+                <Divider />
+                <HStack justify="flex-end" spacing={2}>
+                  <IconButton
+                    aria-label="Entrada"
+                    icon={<FiPackage />}
+                    size="sm"
+                    colorScheme="blue"
+                    variant="ghost"
+                    onClick={() => handleOpenLoteModal(product)}
+                    title="Agregar nuevo lote"
+                  />
+                  <IconButton
+                    aria-label="Editar"
+                    icon={<FiEdit2 />}
+                    size="sm"
+                    onClick={() => requireAdminPassword({ type: 'edit', product })}
+                  />
+                  <IconButton
+                    aria-label="Eliminar"
+                    icon={<FiTrash2 />}
+                    size="sm"
+                    colorScheme="red"
+                    variant="ghost"
+                    onClick={() => handleDelete(product.id)}
+                  />
+                </HStack>
+              </VStack>
+            </Box>
+          ))}
+        </VStack>
       </VStack>
 
       {/* Modal contraseña para no administradores */}
