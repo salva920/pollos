@@ -68,6 +68,15 @@ export async function POST(request: Request) {
       )
     }
 
+    // Convertir cantidad a número
+    const cantidadNum = parseFloat(cantidad)
+    if (isNaN(cantidadNum) || cantidadNum <= 0) {
+      return NextResponse.json(
+        { error: 'La cantidad debe ser un número válido mayor a cero' },
+        { status: 400 }
+      )
+    }
+
     // Obtener información del producto y lote
     const product = await prisma.product.findUnique({
       where: { id: productId },
@@ -90,7 +99,7 @@ export async function POST(request: Request) {
     // Crear la merma en una transacción
     const merma = await prisma.$transaction(async (tx) => {
       const costoUnitario = lote?.precioCompra || product.pricePerUnit
-      const costoTotal = costoUnitario * cantidad
+      const costoTotal = costoUnitario * cantidadNum
 
       const newMerma = await tx.merma.create({
         data: {
@@ -98,7 +107,7 @@ export async function POST(request: Request) {
           productName: product.name,
           loteId: loteId || null,
           loteNumber: lote?.loteNumber || null,
-          cantidad: parseFloat(cantidad),
+          cantidad: cantidadNum,
           motivo,
           descripcion,
           costoUnitario,
@@ -112,7 +121,7 @@ export async function POST(request: Request) {
         await tx.loteProducto.update({
           where: { id: loteId },
           data: {
-            stockActual: lote.stockActual - cantidad,
+            stockActual: lote.stockActual - cantidadNum,
           },
         })
       }
@@ -122,7 +131,7 @@ export async function POST(request: Request) {
         where: { id: productId },
         data: {
           stock: {
-            decrement: cantidad,
+            decrement: cantidadNum,
           },
         },
       })
