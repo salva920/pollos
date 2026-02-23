@@ -308,12 +308,28 @@ export default function AdministracionPage() {
     },
   })
 
-  // Calcular saldo actual
-  const saldoActual = transacciones[0]?.saldo || 0
+  const { data: tasaCambio } = useQuery({
+    queryKey: ['tasa-cambio'],
+    queryFn: async () => {
+      const res = await fetch('/api/tasa-cambio')
+      if (!res.ok) return { tasa: 0 }
+      return res.json()
+    },
+  })
 
-  // Calcular totales
-  const totalGastos = gastos.reduce((sum: number, gasto: any) => sum + gasto.monto, 0)
-  const totalMermas = mermas.reduce((sum: number, merma: any) => sum + merma.costoTotal, 0)
+  const tasa = tasaCambio?.tasa || 0
+
+  // Calcular saldo actual (en caja está en Bs; lo mostramos en USD)
+  const saldoActualBs = transacciones[0]?.saldo || 0
+  const saldoActualUsd = tasa > 0 ? saldoActualBs / tasa : saldoActualBs
+
+  // Calcular totales: gastos pueden ser VES o USD; mermas en USD
+  const totalGastosUsd = gastos.reduce((sum: number, gasto: any) => {
+    const montoUsd = gasto.moneda === 'USD' ? gasto.monto : (tasa > 0 ? gasto.monto / tasa : 0)
+    return sum + montoUsd
+  }, 0)
+  const totalGastosRaw = gastos.reduce((sum: number, g: any) => sum + g.monto, 0)
+  const totalMermasUsd = mermas.reduce((sum: number, merma: any) => sum + merma.costoTotal, 0)
 
   // Puerta: cargando
   if (gateLoading) {
@@ -475,8 +491,8 @@ export default function AdministracionPage() {
             bg="white"
           >
             <StatLabel fontWeight="bold" color="gray.800">Saldo en Caja</StatLabel>
-            <StatNumber color={saldoActual >= 0 ? 'green.600' : 'red.600'} fontWeight="700" fontSize="2xl" mt={1}>
-              {formatCurrency(saldoActual)}
+            <StatNumber color={saldoActualUsd >= 0 ? 'green.600' : 'red.600'} fontWeight="700" fontSize="2xl" mt={1}>
+              {tasa > 0 ? formatCurrency(saldoActualUsd, 'USD') : formatCurrency(saldoActualBs, 'VES')}
             </StatNumber>
           </Stat>
 
@@ -490,7 +506,9 @@ export default function AdministracionPage() {
             bg="white"
           >
             <StatLabel fontWeight="bold" color="gray.800">Total Gastos</StatLabel>
-            <StatNumber color="red.600" fontWeight="700" fontSize="2xl" mt={1}>{formatCurrency(totalGastos)}</StatNumber>
+            <StatNumber color="red.600" fontWeight="700" fontSize="2xl" mt={1}>
+              {tasa > 0 ? formatCurrency(totalGastosUsd, 'USD') : formatCurrency(totalGastosRaw, 'VES')}
+            </StatNumber>
           </Stat>
 
           <Stat
@@ -503,7 +521,7 @@ export default function AdministracionPage() {
             bg="white"
           >
             <StatLabel fontWeight="bold" color="gray.800">Total Mermas</StatLabel>
-            <StatNumber color="orange.600" fontWeight="700" fontSize="2xl" mt={1}>{formatCurrency(totalMermas)}</StatNumber>
+            <StatNumber color="orange.600" fontWeight="700" fontSize="2xl" mt={1}>{formatCurrency(totalMermasUsd, 'USD')}</StatNumber>
           </Stat>
         </SimpleGrid>
 
@@ -559,12 +577,14 @@ export default function AdministracionPage() {
                         </Td>
                         <Td py={3} px={4} fontWeight="500" color="gray.800" maxW="300px" isTruncated>{tx.concepto}</Td>
                         <Td isNumeric py={3} px={4} fontWeight="bold" fontSize="sm" color="green.600">
-                          {tx.entrada > 0 ? formatCurrency(tx.entrada) : <Text as="span" color="gray.400">-</Text>}
+                          {tx.entrada > 0 ? formatCurrency(tx.entrada, 'VES') : <Text as="span" color="gray.400">-</Text>}
                         </Td>
                         <Td isNumeric py={3} px={4} fontWeight="bold" fontSize="sm" color="red.600">
-                          {tx.salida > 0 ? formatCurrency(tx.salida) : <Text as="span" color="gray.400">-</Text>}
+                          {tx.salida > 0 ? formatCurrency(tx.salida, 'VES') : <Text as="span" color="gray.400">-</Text>}
                         </Td>
-                        <Td isNumeric py={3} px={4} fontWeight="700" fontSize="md" color="gray.900">{formatCurrency(tx.saldo)}</Td>
+                        <Td isNumeric py={3} px={4} fontWeight="700" fontSize="md" color="gray.900">
+                          {tasa > 0 ? formatCurrency(tx.saldo / tasa, 'USD') : formatCurrency(tx.saldo, 'VES')}
+                        </Td>
                       </Tr>
                     ))}
                   </Tbody>
@@ -596,20 +616,22 @@ export default function AdministracionPage() {
                         {tx.entrada > 0 && (
                           <Box>
                             <Text fontSize="xs" color="gray.600">Entrada:</Text>
-                            <Text fontWeight="bold" fontSize="sm" color="green.600">{formatCurrency(tx.entrada)}</Text>
+                            <Text fontWeight="bold" fontSize="sm" color="green.600">{formatCurrency(tx.entrada, 'VES')}</Text>
                           </Box>
                         )}
                         {tx.salida > 0 && (
                           <Box>
                             <Text fontSize="xs" color="gray.600">Salida:</Text>
-                            <Text fontWeight="bold" fontSize="sm" color="red.600">{formatCurrency(tx.salida)}</Text>
+                            <Text fontWeight="bold" fontSize="sm" color="red.600">{formatCurrency(tx.salida, 'VES')}</Text>
                           </Box>
                         )}
                       </SimpleGrid>
                       <Divider />
                       <Flex justify="space-between" align="center">
                         <Text fontSize="sm" color="gray.600" fontWeight="bold">Saldo:</Text>
-                        <Text fontWeight="700" fontSize="md" color="gray.900">{formatCurrency(tx.saldo)}</Text>
+                        <Text fontWeight="700" fontSize="md" color="gray.900">
+                          {tasa > 0 ? formatCurrency(tx.saldo / tasa, 'USD') : formatCurrency(tx.saldo, 'VES')}
+                        </Text>
                       </Flex>
                     </VStack>
                   </Box>
