@@ -1026,17 +1026,17 @@ export default function NuevaVentaPage() {
       </VStack>
 
       {/* Modal para seleccionar producto */}
-      <Modal isOpen={isProductModalOpen} onClose={onProductModalClose} size="lg">
+      <Modal isOpen={isProductModalOpen} onClose={onProductModalClose} size={{ base: 'full', md: 'lg' }}>
         <ModalOverlay />
-        <ModalContent borderRadius="2xl">
-          <ModalHeader>
+        <ModalContent borderRadius={{ base: 0, md: '2xl' }} maxW={{ base: '100%', md: '32rem' }} margin={{ base: 0, md: 4 }} maxH={{ base: '100vh', md: '90vh' }}>
+          <ModalHeader pt={{ base: 8, md: 4 }}>
             <HStack>
               <FiPackage />
-              <Text>Agregar Producto - {selectedProduct?.name}</Text>
+              <Text fontSize={{ base: 'md', md: 'lg' }} noOfLines={1}>Agregar Producto - {selectedProduct?.name}</Text>
             </HStack>
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
+          <ModalBody overflowY="auto" pb={6}>
             {loadingLotes ? (
               <Center py={8}>
                 <Spinner size="xl" color="brand.500" thickness="3px" />
@@ -1060,11 +1060,12 @@ export default function NuevaVentaPage() {
                   </VStack>
                 </Alert>
 
-                {/* Información de lotes */}
+                {/* Información de lotes - Tabla en desktop, tarjetas en mobile */}
                 {productLotes.length > 0 && (
                   <Box>
                     <Text fontWeight="bold" fontSize="sm" mb={2}>Lotes disponibles:</Text>
-                    <Box overflowX="auto">
+                    {/* Vista desktop: tabla */}
+                    <Box display={{ base: 'none', md: 'block' }} overflowX="auto">
                       <Table size="sm" variant="simple">
                         <Thead>
                           <Tr>
@@ -1097,11 +1098,48 @@ export default function NuevaVentaPage() {
                         </Tbody>
                       </Table>
                     </Box>
+                    {/* Vista mobile: tarjetas por lote */}
+                    <VStack display={{ base: 'flex', md: 'none' }} spacing={2} align="stretch" maxH="200px" overflowY="auto">
+                      {productLotes.map((lote: any) => (
+                        <Box
+                          key={lote.id}
+                          p={3}
+                          bg="gray.50"
+                          borderRadius="md"
+                          borderWidth="1px"
+                          borderColor="blackAlpha.100"
+                        >
+                          <VStack align="stretch" spacing={1}>
+                            <Flex justify="space-between" align="center">
+                              <Text fontSize="xs" fontWeight="bold" color="gray.600">Lote</Text>
+                              <Text fontSize="xs" noOfLines={1} title={lote.loteNumber}>{lote.loteNumber}</Text>
+                            </Flex>
+                            <Flex justify="space-between" align="center">
+                              <Text fontSize="xs" color="gray.600">Stock</Text>
+                              <Text fontSize="xs" fontWeight="medium">{lote.stockActual}</Text>
+                            </Flex>
+                            <Flex justify="space-between" align="center">
+                              <Text fontSize="xs" color="gray.600">Precio Compra</Text>
+                              <VStack align="end" spacing={0}>
+                                <Text fontSize="xs" fontWeight="bold">{formatCurrency(lote.precioCompra, 'USD')}</Text>
+                                {tasaCambio?.tasa > 0 && (
+                                  <Text fontSize="xs" color="gray.500">≈ {formatCurrency(lote.precioCompra * tasaCambio.tasa, 'VES')}</Text>
+                                )}
+                              </VStack>
+                            </Flex>
+                            <Flex justify="space-between" align="center">
+                              <Text fontSize="xs" color="gray.600">Vencimiento</Text>
+                              <Text fontSize="xs">{formatDateShort(lote.fechaVencimiento)}</Text>
+                            </Flex>
+                          </VStack>
+                        </Box>
+                      ))}
+                    </VStack>
                   </Box>
                 )}
 
-                <HStack spacing={4}>
-                  <FormControl isRequired>
+                <Flex direction={{ base: 'column', md: 'row' }} gap={4} w="full">
+                  <FormControl isRequired flex={{ base: '0 0 auto', md: 1 }}>
                     <FormLabel>Cantidad</FormLabel>
                     <Input
                       type="number"
@@ -1114,7 +1152,7 @@ export default function NuevaVentaPage() {
                     />
                   </FormControl>
 
-                  <FormControl isRequired>
+                  <FormControl isRequired flex={{ base: '0 0 auto', md: 1 }}>
                     <FormLabel>Precio de Venta (USD)</FormLabel>
                     <Input
                       type="number"
@@ -1133,7 +1171,7 @@ export default function NuevaVentaPage() {
                       </Text>
                     )}
                   </FormControl>
-                </HStack>
+                </Flex>
 
                 {productQuantity && productPrice && parseFloat(productQuantity) > 0 && parseFloat(productPrice) > 0 && (
                   <Box p={3} bg="green.50" borderRadius="md" border="1px solid" borderColor="green.200">
@@ -1155,7 +1193,7 @@ export default function NuevaVentaPage() {
               </VStack>
             )}
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter pt={2} pb={{ base: 8, md: 4 }}>
             <Button variant="ghost" mr={3} onClick={onProductModalClose}>
               Cancelar
             </Button>
