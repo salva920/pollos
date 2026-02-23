@@ -319,9 +319,17 @@ export default function AdministracionPage() {
 
   const tasa = tasaCambio?.tasa || 0
 
-  // Calcular saldo actual (en caja está en Bs; lo mostramos en USD)
+  // Saldo en caja: si la última transacción es en USD, el saldo guardado ya está en USD; si es VES, convertir con tasa
+  const primeraTx = transacciones[0]
   const saldoActualBs = transacciones[0]?.saldo || 0
-  const saldoActualUsd = tasa > 0 ? saldoActualBs / tasa : saldoActualBs
+  const saldoEnUsd =
+    primeraTx?.moneda === 'USD'
+      ? saldoActualBs
+      : tasa > 0
+        ? saldoActualBs / tasa
+        : saldoActualBs
+  const saldoActualUsd = saldoEnUsd
+  const saldoEsVes = primeraTx?.moneda !== 'USD'
 
   // Calcular totales: gastos pueden ser VES o USD; mermas en USD
   const totalGastosUsd = gastos.reduce((sum: number, gasto: any) => {
@@ -492,7 +500,7 @@ export default function AdministracionPage() {
           >
             <StatLabel fontWeight="bold" color="gray.800">Saldo en Caja</StatLabel>
             <StatNumber color={saldoActualUsd >= 0 ? 'green.600' : 'red.600'} fontWeight="700" fontSize="2xl" mt={1}>
-              {tasa > 0 ? formatCurrency(saldoActualUsd, 'USD') : formatCurrency(saldoActualBs, 'VES')}
+              {tasa > 0 || !saldoEsVes ? formatCurrency(saldoActualUsd, 'USD') : formatCurrency(saldoActualBs, 'VES')}
             </StatNumber>
           </Stat>
 
@@ -577,13 +585,43 @@ export default function AdministracionPage() {
                         </Td>
                         <Td py={3} px={4} fontWeight="500" color="gray.800" maxW="300px" isTruncated>{tx.concepto}</Td>
                         <Td isNumeric py={3} px={4} fontWeight="bold" fontSize="sm" color="green.600">
-                          {tx.entrada > 0 ? formatCurrency(tx.entrada, 'VES') : <Text as="span" color="gray.400">-</Text>}
+                          {tx.entrada > 0 ? (
+                            tx.moneda === 'USD' ? (
+                              <VStack align="end" spacing={0}>
+                                <Text>{formatCurrency(tx.entrada, 'USD')}</Text>
+                                {tasa > 0 && (
+                                  <Text fontSize="xs" color="gray.600">≈ {formatCurrency(tx.entrada * tasa, 'VES')}</Text>
+                                )}
+                              </VStack>
+                            ) : (
+                              formatCurrency(tx.entrada, 'VES')
+                            )
+                          ) : (
+                            <Text as="span" color="gray.400">-</Text>
+                          )}
                         </Td>
                         <Td isNumeric py={3} px={4} fontWeight="bold" fontSize="sm" color="red.600">
-                          {tx.salida > 0 ? formatCurrency(tx.salida, 'VES') : <Text as="span" color="gray.400">-</Text>}
+                          {tx.salida > 0 ? (
+                            tx.moneda === 'USD' ? (
+                              <VStack align="end" spacing={0}>
+                                <Text>{formatCurrency(tx.salida, 'USD')}</Text>
+                                {tasa > 0 && (
+                                  <Text fontSize="xs" color="gray.600">≈ {formatCurrency(tx.salida * tasa, 'VES')}</Text>
+                                )}
+                              </VStack>
+                            ) : (
+                              formatCurrency(tx.salida, 'VES')
+                            )
+                          ) : (
+                            <Text as="span" color="gray.400">-</Text>
+                          )}
                         </Td>
                         <Td isNumeric py={3} px={4} fontWeight="700" fontSize="md" color="gray.900">
-                          {tasa > 0 ? formatCurrency(tx.saldo / tasa, 'USD') : formatCurrency(tx.saldo, 'VES')}
+                          {tx.moneda === 'USD'
+                            ? formatCurrency(tx.saldo, 'USD')
+                            : tasa > 0
+                              ? formatCurrency(tx.saldo / tasa, 'USD')
+                              : formatCurrency(tx.saldo, 'VES')}
                         </Td>
                       </Tr>
                     ))}
@@ -616,13 +654,31 @@ export default function AdministracionPage() {
                         {tx.entrada > 0 && (
                           <Box>
                             <Text fontSize="xs" color="gray.600">Entrada:</Text>
-                            <Text fontWeight="bold" fontSize="sm" color="green.600">{formatCurrency(tx.entrada, 'VES')}</Text>
+                            {tx.moneda === 'USD' ? (
+                              <>
+                                <Text fontWeight="bold" fontSize="sm" color="green.600">{formatCurrency(tx.entrada, 'USD')}</Text>
+                                {tasa > 0 && (
+                                  <Text fontSize="xs" color="gray.500">≈ {formatCurrency(tx.entrada * tasa, 'VES')}</Text>
+                                )}
+                              </>
+                            ) : (
+                              <Text fontWeight="bold" fontSize="sm" color="green.600">{formatCurrency(tx.entrada, 'VES')}</Text>
+                            )}
                           </Box>
                         )}
                         {tx.salida > 0 && (
                           <Box>
                             <Text fontSize="xs" color="gray.600">Salida:</Text>
-                            <Text fontWeight="bold" fontSize="sm" color="red.600">{formatCurrency(tx.salida, 'VES')}</Text>
+                            {tx.moneda === 'USD' ? (
+                              <>
+                                <Text fontWeight="bold" fontSize="sm" color="red.600">{formatCurrency(tx.salida, 'USD')}</Text>
+                                {tasa > 0 && (
+                                  <Text fontSize="xs" color="gray.500">≈ {formatCurrency(tx.salida * tasa, 'VES')}</Text>
+                                )}
+                              </>
+                            ) : (
+                              <Text fontWeight="bold" fontSize="sm" color="red.600">{formatCurrency(tx.salida, 'VES')}</Text>
+                            )}
                           </Box>
                         )}
                       </SimpleGrid>
@@ -630,7 +686,11 @@ export default function AdministracionPage() {
                       <Flex justify="space-between" align="center">
                         <Text fontSize="sm" color="gray.600" fontWeight="bold">Saldo:</Text>
                         <Text fontWeight="700" fontSize="md" color="gray.900">
-                          {tasa > 0 ? formatCurrency(tx.saldo / tasa, 'USD') : formatCurrency(tx.saldo, 'VES')}
+                          {tx.moneda === 'USD'
+                            ? formatCurrency(tx.saldo, 'USD')
+                            : tasa > 0
+                              ? formatCurrency(tx.saldo / tasa, 'USD')
+                              : formatCurrency(tx.saldo, 'VES')}
                         </Text>
                       </Flex>
                     </VStack>
