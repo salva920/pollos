@@ -67,11 +67,21 @@ export async function POST(
           cantidad: parseFloat(cantidad),
           stockActual: parseFloat(cantidad),
           precioCompra: parseFloat(precioCompra),
-          precioVenta: product.pricePerUnit, // Usar el precio final de venta del producto
+          precioVenta: product.pricePerUnit,
           fechaIngreso: fechaIngresoDate,
           fechaVencimiento: fechaVencimientoDate,
           estado: loteStatus,
         },
+      })
+
+      console.log('[API Lote] Lote agregado (entrada manual):', {
+        loteId: nuevoLote.id,
+        loteNumber: nuevoLote.loteNumber,
+        productId: params.id,
+        productName: product.name,
+        cantidad: parseFloat(cantidad),
+        precioCompra: parseFloat(precioCompra),
+        precioVenta: product.pricePerUnit,
       })
 
       // Actualizar el stock del producto

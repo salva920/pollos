@@ -130,19 +130,28 @@ export async function POST(request: Request) {
         // Crear el lote del producto
         const loteStatus = getLoteStatus(item.fechaVencimiento)
 
-        await tx.loteProducto.create({
+        const nuevoLote = await tx.loteProducto.create({
           data: {
             productId: item.productId,
             loteNumber,
             cantidad: item.cantidad,
             stockActual: item.cantidad,
             precioCompra: item.precioUnitario,
-            precioVenta: item.precioVenta || item.precioUnitario * 1.3, // 30% markup por defecto
+            precioVenta: item.precioVenta || item.precioUnitario * 1.3,
             fechaIngreso: new Date(),
             fechaVencimiento: new Date(item.fechaVencimiento),
             estado: loteStatus,
             compraId: newCompra.id,
           },
+        })
+
+        console.log('[API Compras] Lote creado desde compra:', {
+          loteId: nuevoLote.id,
+          loteNumber: nuevoLote.loteNumber,
+          productId: item.productId,
+          cantidad: item.cantidad,
+          precioCompra: item.precioUnitario,
+          precioVenta: nuevoLote.precioVenta,
         })
 
         // Actualizar stock del producto

@@ -143,14 +143,37 @@ export async function POST(request: Request) {
 
         if (!product) throw new Error('Producto no encontrado')
 
-        // Usar siempre el precio final del producto (pricePerUnit) como precio de venta
-        // El usuario puede modificar este precio en el frontend si es necesario
         const precioVenta = item.price || product.pricePerUnit
         const subtotal = precioVenta * item.quantity
 
-        // Calcular ganancia automáticamente: precio final de venta - precio de compra del lote (FIFO)
-        const costoUnitario = product.lotes[0]?.precioCompra || 0
-        const ganancia = (precioVenta - costoUnitario) * item.quantity
+        // Ganancia con FIFO real: repartir la cantidad vendida entre lotes en orden y sumar (precioVenta - costo lote) por cada tramo
+        let ganancia = 0
+        let cantidadRestante = item.quantity
+        const detalleLotes: Array<{ loteNumber: string; cantidad: number; precioCompra: number; gananciaTramo: number }> = []
+        for (const lote of product.lotes) {
+          if (cantidadRestante <= 0) break
+          const cantidadDelLote = Math.min(lote.stockActual, cantidadRestante)
+          const costoUnit = lote.precioCompra ?? 0
+          const gananciaLote = (precioVenta - costoUnit) * cantidadDelLote
+          ganancia += gananciaLote
+          detalleLotes.push({
+            loteNumber: lote.loteNumber,
+            cantidad: cantidadDelLote,
+            precioCompra: costoUnit,
+            gananciaTramo: gananciaLote,
+          })
+          cantidadRestante -= cantidadDelLote
+        }
+
+        console.log('[API Ventas] Item ganancia (FIFO):', {
+          productId: item.productId,
+          productName: product.name,
+          quantity: item.quantity,
+          precioVenta,
+          subtotal,
+          gananciaItem: ganancia,
+          lotesUsados: detalleLotes,
+        })
 
         total += subtotal
         gananciaTotal += ganancia
@@ -164,6 +187,8 @@ export async function POST(request: Request) {
         }
       })
     )
+
+    console.log('[API Ventas] Totales venta:', { total, gananciaTotal, itemsCount: itemsConPrecio.length })
 
     // Crear la venta en una transacción
     const sale = await prisma.$transaction(async (tx) => {

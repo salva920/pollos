@@ -128,7 +128,8 @@ export async function POST(request: Request) {
 
     // Crear el producto y el lote inicial si hay stock
     const stockInicial = stock ? parseFloat(stock) : 0
-    
+    const precioInicialNum = precioInicial && precioInicial !== '' ? parseFloat(precioInicial) : null
+
     const product = await prisma.product.create({
       data: {
         name,
@@ -136,7 +137,7 @@ export async function POST(request: Request) {
         subCategory,
         description,
         unit,
-        precioInicial: precioInicial && precioInicial !== '' ? parseFloat(precioInicial) : null,
+        precioInicial: precioInicialNum,
         pricePerUnit: parseFloat(pricePerUnit),
         stock: stockInicial,
         minStock: parseFloat(minStock) || 0,
@@ -149,26 +150,45 @@ export async function POST(request: Request) {
       },
     })
 
+    console.log('[API Productos] Producto creado:', {
+      id: product.id,
+      name: product.name,
+      stockInicial,
+      precioInicial: precioInicialNum,
+      pricePerUnit: product.pricePerUnit,
+    })
+
     // Si hay stock inicial, crear un lote automático para FIFO
-    // Nota: El precio de compra se establecerá cuando se registre la primera compra real
-    // Por ahora, el precio de compra es 0 hasta que se registre una compra
+    // Usar precioInicial del producto como precioCompra del lote si está definido; si no, queda 0 hasta primera compra/entrada
     if (stockInicial > 0) {
       const fechaVencimiento = new Date()
-      // Si el producto tiene días de vida útil, usar eso; si no, 365 días por defecto
       const diasVida = shelfLifeDays ? parseInt(shelfLifeDays) : 365
       fechaVencimiento.setDate(fechaVencimiento.getDate() + diasVida)
 
-      await prisma.loteProducto.create({
+      const precioCompraLote = precioInicialNum != null && precioInicialNum >= 0 ? precioInicialNum : 0
+
+      const loteInicial = await prisma.loteProducto.create({
         data: {
           productId: product.id,
           loteNumber: `INICIAL-${Date.now()}`,
           cantidad: stockInicial,
           stockActual: stockInicial,
-          precioCompra: 0, // Se actualizará cuando se registre la primera compra
-          precioVenta: parseFloat(pricePerUnit), // Precio final de venta del producto
+          precioCompra: precioCompraLote,
+          precioVenta: parseFloat(pricePerUnit),
           fechaVencimiento,
           estado: 'activo',
         },
+      })
+
+      console.log('[API Productos] Lote INICIAL creado:', {
+        loteId: loteInicial.id,
+        loteNumber: loteInicial.loteNumber,
+        productId: product.id,
+        productName: product.name,
+        cantidad: stockInicial,
+        precioCompra: precioCompraLote,
+        precioVenta: loteInicial.precioVenta,
+        origen: precioInicialNum != null ? 'precioInicial del producto' : '0 (sin precio inicial)',
       })
     }
 
