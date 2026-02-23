@@ -10,7 +10,7 @@ async function obtenerTasaDesdeAPI(): Promise<number | null> {
     const apiKey = process.env.DOLAR_VZLA_API_KEY
     const baseUrl = 'https://api.dolarvzla.com/public/bcv/exchange-rate'
 
-    if (!apiKey?.trim()) {
+    if (apiKey == null || typeof apiKey !== 'string' || !apiKey.trim()) {
       return null
     }
 
@@ -18,7 +18,7 @@ async function obtenerTasaDesdeAPI(): Promise<number | null> {
     const response = await fetch(baseUrl, {
       headers: {
         'Content-Type': 'application/json',
-        'x-dolarvzla-key': apiKey,
+        'x-dolarvzla-key': apiKey.trim(),
       },
     })
 
@@ -133,9 +133,15 @@ export async function GET() {
     })
   } catch (error: any) {
     console.error('Error al obtener tasa de cambio:', error)
+    // No devolver 500: la app puede trabajar con tasa 0 (manual). Devolver 200 para que no falle el recurso.
     return NextResponse.json(
-      { error: 'Error al obtener tasa de cambio', details: error?.message || String(error) },
-      { status: 500 }
+      {
+        tasa: 0,
+        fecha: new Date().toISOString(),
+        fuente: 'bd',
+        error: error?.message || 'Error al obtener tasa',
+      },
+      { status: 200 }
     )
   }
 }
