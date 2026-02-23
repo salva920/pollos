@@ -11,7 +11,8 @@
     "lint": "next lint",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "reset-data": "node scripts/reset-data.js"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.2.4",
@@ -42,11 +43,10 @@
     "@types/node": "^20.11.19",
     "@types/react": "^18.2.57",
     "@types/react-dom": "^18.2.19",
+    "dotenv": "^16.6.1",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",
     "prisma": "^5.22.0",
     "typescript": "^5.3.3"
   }
 }
-
-

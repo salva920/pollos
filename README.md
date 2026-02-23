@@ -121,6 +121,25 @@ npm run dev
 
 La aplicación estará disponible en `http://localhost:3000`
 
+### 7. Reseteo de datos para pruebas
+
+Para borrar todos los datos de negocio y dejar la base lista para probar todos los módulos desde cero (se mantienen usuarios y configuración):
+
+```bash
+npm run reset-data
+```
+
+Esto elimina: productos, lotes, ventas, clientes, proveedores, compras, gastos, mermas, transacciones de caja, tasa de cambio y alertas. **No** se eliminan usuarios ni la contraseña del módulo de administración.
+
+Tras el reseteo puedes iniciar sesión y probar en este orden sugerido:
+1. **Configuración / Tasa de cambio** (Administración → Configuración, si aplica).
+2. **Proveedores** – Crear al menos un proveedor.
+3. **Productos** – Crear productos y hacer entrada de lotes (compras o entrada manual).
+4. **Clientes** – Crear al menos un cliente.
+5. **Ventas** – Nueva venta (cliente, productos, pago).
+6. **Administración** – Revisar transacciones, registrar gasto o merma.
+7. **Dashboard, Alertas, Usuarios** – Comprobar que todo se refleje correctamente.
+
 ## 📖 Uso
 
 ### Primer Inicio

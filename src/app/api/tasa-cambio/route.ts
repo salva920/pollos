@@ -10,8 +10,7 @@ async function obtenerTasaDesdeAPI(): Promise<number | null> {
     const apiKey = process.env.DOLAR_VZLA_API_KEY
     const baseUrl = 'https://api.dolarvzla.com/public/bcv/exchange-rate'
 
-    if (!apiKey) {
-      console.warn('DOLAR_VZLA_API_KEY no configurada')
+    if (!apiKey?.trim()) {
       return null
     }
 
@@ -24,9 +23,8 @@ async function obtenerTasaDesdeAPI(): Promise<number | null> {
     })
 
     if (!response.ok) {
-      if (response.status === 401) {
-        console.warn('API tasa de cambio: 401 Unauthorized. Revisa DOLAR_VZLA_API_KEY o usa tasa manual.')
-      } else {
+      // No loguear 401 en cada GET; el fallback a BD es correcto y el PUT ya informa al usuario
+      if (response.status !== 401) {
         console.error('Error al obtener tasa desde API externa:', response.status, response.statusText)
       }
       return null
