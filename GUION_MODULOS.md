@@ -1,5 +1,11 @@
 # Guion breve – Demostración de módulos (Sistema de Alimentos)
 
+Hola, Sr. Roberto. En este video le mostraré cómo funciona el sistema desde mi teléfono.
+El sistema es una aplicación web que se ejecuta en internet. Se abre en el navegador usando el enlace que le proporcionamos, por ejemplo, algo como pollo.com o la dirección que usa su equipo. Ese mismo enlace es el sistema: una aplicación web que puede usar desde cualquier dispositivo (teléfono, tableta o computadora) siempre que tenga internet.
+Para acceder, iniciamos sesión con un nombre de usuario y contraseña. Cada persona que usa el sistema tiene su propia cuenta y un rol (por ejemplo, administrador, ventas, etc.), para que el sistema pueda mostrarle solo lo que necesita.
+Comencemos abriendo la aplicación e iniciando sesión.
+
+
 ## 1. Dashboard
 - **Qué mostrar:** Vista principal con resumen del negocio.
 - **Guion:** "En el Dashboard vemos ventas del día, productos en stock, total de ventas y productos más vendidos. También aparecen alertas de productos próximos a vencer y de stock bajo. Desde aquí podemos ir a Nueva Venta o refrescar la información."

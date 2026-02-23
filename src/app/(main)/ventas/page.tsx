@@ -92,7 +92,7 @@ export default function VentasPage() {
                   <Td isNumeric>
                     <VStack align="end" spacing={0}>
                       <Text fontWeight="bold" color="brand.600">
-                        {formatCurrency(sale.total)}
+                        {formatCurrency(sale.total, 'USD')}
                       </Text>
                       {tasaCambio?.tasa > 0 && (
                         <Text fontSize="xs" color="gray.600">
@@ -104,7 +104,7 @@ export default function VentasPage() {
                   <Td isNumeric>
                     <VStack align="end" spacing={0}>
                       <Text fontWeight="bold" color="green.600">
-                        {formatCurrency(sale.ganancia)}
+                        {formatCurrency(sale.ganancia, 'USD')}
                       </Text>
                       {tasaCambio?.tasa > 0 && (
                         <Text fontSize="xs" color="gray.600">
@@ -153,7 +153,7 @@ export default function VentasPage() {
                 <Flex justify="space-between">
                   <Text color="gray.600" fontSize="sm">Total:</Text>
                   <VStack align="end" spacing={0}>
-                    <Text fontWeight="bold" color="brand.600">{formatCurrency(sale.total)}</Text>
+                    <Text fontWeight="bold" color="brand.600">{formatCurrency(sale.total, 'USD')}</Text>
                     {tasaCambio?.tasa > 0 && (
                       <Text fontSize="xs" color="gray.600">
                         ≈ {formatCurrency(sale.total * tasaCambio.tasa, 'VES')}
@@ -164,7 +164,7 @@ export default function VentasPage() {
                 <Flex justify="space-between">
                   <Text color="gray.600" fontSize="sm">Ganancia:</Text>
                   <VStack align="end" spacing={0}>
-                    <Text fontWeight="bold" color="green.600">{formatCurrency(sale.ganancia)}</Text>
+                    <Text fontWeight="bold" color="green.600">{formatCurrency(sale.ganancia, 'USD')}</Text>
                     {tasaCambio?.tasa > 0 && (
                       <Text fontSize="xs" color="gray.600">
                         ≈ {formatCurrency(sale.ganancia * tasaCambio.tasa, 'VES')}
