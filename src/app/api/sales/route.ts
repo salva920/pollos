@@ -182,11 +182,14 @@ export async function POST(request: Request) {
           productId: item.productId,
           quantity: item.quantity,
           price: precioVenta,
-          subtotal,
-          ganancia,
+          subtotal: Math.round(subtotal * 100) / 100,
+          ganancia: Math.round(ganancia * 100) / 100,
         }
       })
     )
+
+    total = Math.round(total * 100) / 100
+    gananciaTotal = Math.round(gananciaTotal * 100) / 100
 
     console.log('[API Ventas] Totales venta:', { total, gananciaTotal, itemsCount: itemsConPrecio.length })
 

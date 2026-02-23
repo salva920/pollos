@@ -77,6 +77,7 @@ export default function VentasPage() {
               <Tr>
                 <Th fontWeight="bold" color="gray.800">Factura</Th>
                 <Th fontWeight="bold" color="gray.800">Cliente</Th>
+                <Th fontWeight="bold" color="gray.800">Productos</Th>
                 <Th isNumeric fontWeight="bold" color="gray.800">Total</Th>
                 <Th isNumeric fontWeight="bold" color="gray.800">Ganancia</Th>
                 <Th fontWeight="bold" color="gray.800">Método de Pago</Th>
@@ -89,6 +90,19 @@ export default function VentasPage() {
                 <Tr key={sale.id}>
                   <Td fontWeight="bold">{sale.invoiceNumber}</Td>
                   <Td>{sale.customer?.name || 'N/A'}</Td>
+                  <Td>
+                    <VStack align="start" spacing={0.5}>
+                      {(sale.items || []).map((item: any) => (
+                        <Text key={item.id} fontSize="sm" noOfLines={2}>
+                          {item.product?.name || 'Producto'} × {Number(item.quantity)}
+                          {item.product?.unit ? ` ${item.product.unit}` : ''}
+                        </Text>
+                      ))}
+                      {(!sale.items || sale.items.length === 0) && (
+                        <Text fontSize="sm" color="gray.500">—</Text>
+                      )}
+                    </VStack>
+                  </Td>
                   <Td isNumeric>
                     <VStack align="end" spacing={0}>
                       <Text fontWeight="bold" color="brand.600">
@@ -150,6 +164,22 @@ export default function VentasPage() {
                   <Text color="gray.600" fontSize="sm">Cliente:</Text>
                   <Text fontWeight="500">{sale.customer?.name || 'N/A'}</Text>
                 </Flex>
+                {(sale.items || []).length > 0 && (
+                  <>
+                    <Flex direction="column" gap={1}>
+                      <Text color="gray.600" fontSize="sm">Productos:</Text>
+                      <VStack align="stretch" spacing={0.5}>
+                        {(sale.items || []).map((item: any) => (
+                          <Text key={item.id} fontSize="sm">
+                            {item.product?.name || 'Producto'} × {Number(item.quantity)}
+                            {item.product?.unit ? ` ${item.product.unit}` : ''}
+                          </Text>
+                        ))}
+                      </VStack>
+                    </Flex>
+                    <Divider />
+                  </>
+                )}
                 <Flex justify="space-between">
                   <Text color="gray.600" fontSize="sm">Total:</Text>
                   <VStack align="end" spacing={0}>
