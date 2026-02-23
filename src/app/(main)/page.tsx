@@ -682,7 +682,14 @@ export default function HomePage() {
                   {recentSales.length > 0 ? recentSales.map((sale) => (
                     <Tr key={sale.id}>
                       <Td>{sale.customer?.name || 'Cliente desconocido'}</Td>
-                      <Td isNumeric fontWeight="bold" color="brand.600">{formatCurrency(sale.total || 0)}</Td>
+                      <Td isNumeric>
+                        <VStack align="end" spacing={0}>
+                          <Text fontWeight="bold" color="brand.600">{formatCurrency(sale.total || 0, 'USD')}</Text>
+                          {tasaCambio?.tasa > 0 && (
+                            <Text fontSize="xs" color="gray.600">≈ {formatCurrency((sale.total || 0) * tasaCambio.tasa, 'VES')}</Text>
+                          )}
+                        </VStack>
+                      </Td>
                       <Td fontSize="xs">{formatDateShort(sale.createdAt)}</Td>
                     </Tr>
                   )) : (
@@ -702,7 +709,12 @@ export default function HomePage() {
                   <Text fontWeight="500" mb={1}>{sale.customer?.name || 'Cliente desconocido'}</Text>
                   <Flex justify="space-between" align="center">
                     <Text fontSize="xs" color="gray.600">{formatDateShort(sale.createdAt)}</Text>
-                    <Text fontWeight="bold" color="brand.600">{formatCurrency(sale.total || 0)}</Text>
+                    <VStack align="end" spacing={0}>
+                      <Text fontWeight="bold" color="brand.600">{formatCurrency(sale.total || 0, 'USD')}</Text>
+                      {tasaCambio?.tasa > 0 && (
+                        <Text fontSize="xs" color="gray.600">≈ {formatCurrency((sale.total || 0) * tasaCambio.tasa, 'VES')}</Text>
+                      )}
+                    </VStack>
                   </Flex>
                 </Box>
               )) : (
